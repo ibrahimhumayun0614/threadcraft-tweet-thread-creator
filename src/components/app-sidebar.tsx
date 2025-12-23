@@ -25,7 +25,7 @@ export function AppSidebar(): JSX.Element {
           </div>
           <span className="text-sm font-bold tracking-tight">Thread Craft</span>
         </div>
-        <SidebarInput placeholder="Search threads..." />
+        <SidebarInput placeholder="Search your stories..." />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -37,7 +37,7 @@ export function AppSidebar(): JSX.Element {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#"><Layers /> <span>My Drafts</span></a>
+                <a href="#"><Layers /> <span>Crafted Threads</span></a>
               </SidebarMenuButton>
               <SidebarMenuAction>
                 <Star className="size-4" />
@@ -45,18 +45,18 @@ export function AppSidebar(): JSX.Element {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#"><Compass /> <span>Templates</span></a>
+                <a href="#"><Compass /> <span>Story Templates</span></a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
         <SidebarSeparator />
         <SidebarGroup>
-          <SidebarGroupLabel>Library</SidebarGroupLabel>
+          <SidebarGroupLabel>Your Library</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#"><Star /> <span>Favorites</span></a>
+                <a href="#"><Star /> <span>Starred Stories</span></a>
               </SidebarMenuButton>
               <SidebarMenuBadge>12</SidebarMenuBadge>
             </SidebarMenuItem>
@@ -64,8 +64,8 @@ export function AppSidebar(): JSX.Element {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <div className="px-2 py-4 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
-          Thread Craft v1.0
+        <div className="px-2 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+          Thread Craft Professional v1.0
         </div>
       </SidebarFooter>
     </Sidebar>

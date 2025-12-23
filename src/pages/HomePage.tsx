@@ -26,14 +26,14 @@ export function HomePage() {
   const resultsRef = useRef<HTMLDivElement>(null);
   // Set document title for branding
   useEffect(() => {
-    document.title = "Thread Craft | Create Twitter Threads";
+    document.title = "Thread Craft | Professional Twitter Thread Creator";
   }, []);
   const wordCount = useMemo(() => {
     return inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
   }, [inputText]);
   const handleSplit = () => {
     if (!inputText.trim()) {
-      toast.error('Please enter some text first');
+      toast.error('Thread Craft: Please enter some text first');
       return;
     }
     setIsSplitting(true);
@@ -42,7 +42,7 @@ export function HomePage() {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
-      toast.success(`Generated ${chunks.length} tweets!`);
+      toast.success(`Thread Craft: Crafted ${chunks.length} tweets successfully!`);
       // Reliable scroll to results
       setTimeout(() => {
         if (resultsRef.current) {
@@ -56,13 +56,13 @@ export function HomePage() {
   const handleClear = () => {
     setInputText('');
     setTweets([]);
-    toast.info('Editor cleared');
+    toast.info('Thread Craft: Editor cleared');
   };
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.name.endsWith('.txt')) {
-      toast.error('Only .txt files are supported');
+      toast.error('Thread Craft: Only .txt files are supported');
       return;
     }
     const reader = new FileReader();
@@ -70,10 +70,10 @@ export function HomePage() {
       const content = event.target?.result;
       if (typeof content === 'string') {
         setInputText(content);
-        toast.success('File imported successfully');
+        toast.success('Thread Craft: File imported successfully');
       }
     };
-    reader.onerror = () => toast.error('Failed to read file');
+    reader.onerror = () => toast.error('Thread Craft: Failed to read file');
     reader.readAsText(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -85,7 +85,7 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Full thread copied to clipboard');
+      toast.success('Thread Craft: Full thread copied to clipboard');
     }
   };
   const handleStartFullThread = async () => {
@@ -93,8 +93,8 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Thread ready!', {
-        description: 'First tweet opened. Full thread is in your clipboard.',
+      toast.success('Thread Craft: Story Ready!', {
+        description: 'First tweet opened. The complete thread is saved to your clipboard.',
       });
     }
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweets[0])}`;
@@ -103,7 +103,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-background bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-8 md:py-10 lg:py-12">
+        <div className="py-8 md:py-12 lg:py-16">
           <header className="text-center space-y-6 mb-16">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -124,7 +124,7 @@ export function HomePage() {
               </p>
             </div>
           </header>
-          <main className="max-w-3xl mx-auto space-y-8 relative">
+          <main className="max-w-3xl mx-auto space-y-10 relative">
             <div className="relative group rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-border/50">
               <Textarea
                 placeholder="Paste your essay, article, or thoughts here..."
@@ -143,12 +143,11 @@ export function HomePage() {
                     {inputText.length.toLocaleString()} Chars
                   </div>
                 </div>
-                <span className="text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest">Ready to craft</span>
+                <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Ready</span>
               </div>
             </div>
-            {/* Sticky Action Bar */}
             <div className="sticky bottom-8 z-50">
-              <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white/80 backdrop-blur-xl p-3 rounded-2xl border border-border shadow-2xl ring-1 ring-black/5">
+              <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white/90 backdrop-blur-xl p-3 rounded-2xl border border-border shadow-2xl ring-1 ring-black/5">
                 <div className="flex gap-2 w-full sm:w-auto">
                   <Button
                     variant="outline"
@@ -187,7 +186,7 @@ export function HomePage() {
                   ) : (
                     <Scissors className="w-4 h-4" />
                   )}
-                  {isSplitting ? 'Processing...' : 'Generate Thread'}
+                  {isSplitting ? 'Crafting...' : 'Craft Thread'}
                 </Button>
               </div>
             </div>
@@ -200,7 +199,7 @@ export function HomePage() {
                 <Info className="w-4 h-4 text-blue-600" />
               </div>
               <p className="leading-relaxed font-medium">
-                <strong>Advanced Splitter:</strong> We preserve word integrity and formatting while automatically adding thread counters. Perfect for essays and multi-part stories.
+                <strong>Advanced Crafting:</strong> Our engine preserves word integrity and formatting while automatically adding thread counters. Perfect for essays and multi-part stories.
               </p>
             </motion.div>
           </main>
@@ -211,7 +210,7 @@ export function HomePage() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 40 }}
-                className="mt-24 space-y-12"
+                className="mt-32 space-y-16"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between border-b pb-8 gap-6">
                   <div className="space-y-2">
@@ -276,7 +275,7 @@ export function HomePage() {
               </motion.div>
               <h3 className="text-2xl font-black text-foreground mb-3">Ready for your story</h3>
               <p className="text-muted-foreground/80 max-w-sm mx-auto font-medium">
-                Your perfectly formatted Twitter cards will appear here after you click generate.
+                Your perfectly formatted Thread Craft cards will appear here after you click craft.
               </p>
             </motion.div>
           )}
