@@ -4,18 +4,17 @@
  * and appending "n/total" suffixes.
  */
 export function splitText(text: string, limit: number = 280): string[] {
-  if (!text.trim()) return [];
-  // Buffer for " (99/99)" suffix
+  if (!text || !text.trim()) return [];
+  // Buffer for " (999/999)" suffix (up to 10 chars)
   const reservedSpace = 10;
   const effectiveLimit = limit - reservedSpace;
-  // Split by whitespace but keep the whitespace characters (including newlines)
-  // This allows us to reconstruct the text with original formatting.
+  // Split by whitespace but keep the whitespace characters to preserve formatting
   const segments = text.split(/(\s+)/);
   const chunks: string[] = [];
   let currentChunk = "";
   for (const segment of segments) {
     if (!segment) continue;
-    // Handle extremely long segments (e.g., long URLs or words)
+    // Handle extremely long segments (e.g., long URLs or words with no whitespace)
     if (segment.length > effectiveLimit) {
       // If we have an existing chunk, push it first
       if (currentChunk.trim()) {
@@ -34,7 +33,7 @@ export function splitText(text: string, limit: number = 280): string[] {
     if ((currentChunk + segment).length <= effectiveLimit) {
       currentChunk += segment;
     } else {
-      // Push the current chunk (trimmed to avoid trailing whitespace issues)
+      // Push the current chunk
       if (currentChunk.trim()) {
         chunks.push(currentChunk.trim());
       }
@@ -42,10 +41,11 @@ export function splitText(text: string, limit: number = 280): string[] {
       currentChunk = segment.trim() ? segment : "";
     }
   }
+  // Push final chunk
   if (currentChunk.trim()) {
     chunks.push(currentChunk.trim());
   }
-  // Final pass: Apply numbering suffix to each chunk (e.g., " 1/5")
+  // Final pass: Apply numbering suffix to each chunk with a preceding space
   const total = chunks.length;
   return chunks.map((chunk, index) => {
     const suffix = ` ${index + 1}/${total}`;
