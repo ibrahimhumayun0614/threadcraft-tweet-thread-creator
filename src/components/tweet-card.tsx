@@ -23,7 +23,6 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
   const charCount = text.length;
-  // Character count color logic
   const getBadgeStyles = () => {
     if (charCount > 275) return 'bg-destructive/10 text-destructive font-bold border-destructive/20';
     if (charCount > 260) return 'bg-orange-500/10 text-orange-600 font-bold border-orange-500/20';
@@ -31,40 +30,41 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
   };
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.3) }}
       layout
     >
-      <Card className="h-full flex flex-col border-border bg-white shadow-sm hover:shadow-md transition-all group overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between py-3 px-4 bg-slate-50 group-hover:bg-slate-100 transition-colors border-b">
+      <Card className="h-full flex flex-col border-border bg-white shadow-sm hover:shadow-md hover:border-blue-200/50 transition-all duration-300 group overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between py-3 px-5 bg-slate-50/50 group-hover:bg-slate-100/80 transition-colors border-b">
           <span className="text-[10px] font-black text-primary tracking-widest uppercase">
             Tweet {index + 1} of {total}
           </span>
-          <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border transition-colors ${getBadgeStyles()}`}>
+          <span className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full border transition-colors ${getBadgeStyles()}`}>
             {charCount}/280
           </span>
         </CardHeader>
-        <CardContent className="flex-1 p-5">
-          <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground selection:bg-blue-500/20">
+        <CardContent className="flex-1 p-6">
+          <p className="text-base leading-relaxed whitespace-pre-wrap text-foreground selection:bg-blue-500/20 antialiased">
             {text}
           </p>
         </CardContent>
-        <CardFooter className="p-3 border-t bg-slate-50/30 flex justify-end gap-2">
+        <CardFooter className="p-4 border-t bg-slate-50/20 flex justify-end gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={handlePostOnX}
-            className="h-8 gap-2 text-xs hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2] transition-colors"
+            className="h-9 gap-2 text-xs font-semibold hover:bg-blue-50 hover:text-blue-600 transition-colors rounded-lg"
           >
             <Twitter className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Post Part</span>
+            <span className="hidden xs:inline">Post</span>
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleCopy}
-            className="h-8 gap-2 text-xs hover:bg-accent transition-colors"
+            className="h-9 gap-2 text-xs font-semibold hover:bg-accent transition-colors rounded-lg"
           >
             {copied ? (
               <>
