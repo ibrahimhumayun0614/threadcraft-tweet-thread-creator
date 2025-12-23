@@ -1,6 +1,6 @@
 # Threadcraft
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ibrahimhumayun0614/threadcraft-tweet-thread-creator)
 
 A production-ready full-stack starter template for Cloudflare Workers and Pages. Built with React, TypeScript, Tailwind CSS, shadcn/ui, and Hono for a modern developer experience.
 
@@ -91,7 +91,7 @@ Or manually:
 2. **Deploy Workers**: `wrangler deploy`
 3. **Pages**: Connect repo to [Cloudflare Pages](https://pages.cloudflare.com/).
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ibrahimhumayun0614/threadcraft-tweet-thread-creator)
 
 Automatic asset bundling to Cloudflare Pages with Workers fallback for `/api/*`.
 
