@@ -8,7 +8,8 @@ import {
   Info,
   Rocket,
   ChevronUp,
-  FileText
+  FileText,
+  X as CloseIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, Toaster } from 'sonner';
@@ -22,6 +23,11 @@ export function HomePage() {
   const [inputText, setInputText] = useState('');
   const [tweets, setTweets] = useState<string[]>([]);
   const [isSplitting, setIsSplitting] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    // Persistent state for onboarding visibility
+    const hidden = localStorage.getItem('threadcraft_onboarding_hidden');
+    return !hidden;
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -53,6 +59,10 @@ export function HomePage() {
     setInputText('');
     setTweets([]);
     toast.info('Thread Craft: Editor cleared');
+  };
+  const handleDismissOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('threadcraft_onboarding_hidden', 'true');
   };
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -109,6 +119,37 @@ export function HomePage() {
         </div>
       </header>
       <main className="max-w-3xl mx-auto space-y-10 relative">
+        <AnimatePresence mode="wait">
+          {showOnboarding && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              className="bg-white rounded-2xl p-6 border border-border shadow-sm mb-8 max-w-2xl mx-auto relative group"
+            >
+              <button 
+                onClick={handleDismissOnboarding}
+                className="absolute top-4 right-4 p-1 rounded-full hover:bg-slate-100 text-muted-foreground transition-colors"
+                aria-label="Dismiss onboarding"
+              >
+                <CloseIcon className="w-4 h-4" />
+              </button>
+              <h3 className="text-xl font-bold mb-3 text-foreground flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-blue-500" />
+                How Thread Craft Works
+              </h3>
+              <ol className="text-sm space-y-2 text-muted-foreground/90 ml-4 list-decimal marker:font-bold marker:text-blue-500/50">
+                <li className="pl-2">Paste your text or upload a <code className="bg-slate-100 px-1 rounded">.txt</code> file to the editor below.</li>
+                <li className="pl-2">Click <strong>"Craft Thread"</strong> to automatically split your content into perfectly sized 280-character posts.</li>
+                <li className="pl-2">Copy individual posts or use <strong>"Start Thread"</strong> to begin posting on X. Pro Tip: Post #1 first, then reply with #2, and so on.</li>
+              </ol>
+              <p className="text-xs mt-5 font-bold text-blue-600 uppercase tracking-tight flex items-center gap-2">
+                <Rocket className="w-3.5 h-3.5" />
+                Preserves words/formatting. Ready? ✨
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className="relative group rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-border/50 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all duration-300">
           <Textarea
             placeholder="Paste your essay, article, or thoughts here..."
@@ -170,7 +211,8 @@ export function HomePage() {
         </div>
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           className="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl flex gap-4 text-sm text-blue-900/80"
         >
           <div className="bg-blue-100 p-2 rounded-xl h-fit shrink-0">
