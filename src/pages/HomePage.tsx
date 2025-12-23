@@ -29,6 +29,7 @@ export function HomePage() {
       return;
     }
     setIsSplitting(true);
+    // Simulate minor processing delay for visual feedback
     setTimeout(() => {
       const chunks = splitText(inputText);
       setTweets(chunks);
@@ -36,8 +37,8 @@ export function HomePage() {
       toast.success(`Generated ${chunks.length} tweets!`);
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }, 400);
+      }, 150);
+    }, 450);
   };
   const handleClear = () => {
     setInputText('');
@@ -48,7 +49,7 @@ export function HomePage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.name.endsWith('.txt')) {
-      toast.error('Please upload a .txt file');
+      toast.error('Only .txt files are supported');
       return;
     }
     const reader = new FileReader();
@@ -56,19 +57,25 @@ export function HomePage() {
       const content = event.target?.result;
       if (typeof content === 'string') {
         setInputText(content);
-        toast.success('File imported');
+        toast.success('File content imported successfully');
       }
     };
+    reader.onerror = () => toast.error('Failed to read file');
     reader.readAsText(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
   const formatThreadForClipboard = (items: string[]) => {
-    return items.map((t, i) => `[Tweet ${i + 1}/${items.length}]\n${t}`).join('\n\n');
+    const separator = "──────────────────────────";
+    return items.map((t, i) => `[Tweet ${i + 1}/${items.length}]\n${t}`).join(`\n\n${separator}\n\n`);
   };
   const handleCopyAll = async () => {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
-    if (success) toast.success('Thread copied to clipboard');
+    if (success) {
+      toast.success('Full thread copied to clipboard');
+    } else {
+      toast.error('Failed to copy. Please try manual selection.');
+    }
   };
   const handleStartFullThread = async () => {
     if (tweets.length === 0) return;
@@ -76,8 +83,12 @@ export function HomePage() {
     const success = await copyToClipboard(allText);
     if (success) {
       toast.success('Ready to post!', {
-        description: 'First tweet opened. Remaining thread is in your clipboard.',
+        description: 'First tweet opened. Full thread is in your clipboard.',
         duration: 5000,
+      });
+    } else {
+      toast.warning('Note: Could not copy automatically', {
+        description: 'We opened X for you, but you may need to copy segments manually.',
       });
     }
     const firstTweet = tweets[0];
@@ -85,7 +96,7 @@ export function HomePage() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] min-h-screen">
       <div className="py-8 md:py-10 lg:py-12">
         <header className="text-center space-y-6 mb-16">
           <motion.div
@@ -103,32 +114,32 @@ export function HomePage() {
               Thread<span className="text-blue-600">Craft</span>
             </h1>
             <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed">
-              The distraction-free way to turn long ideas into perfectly split Twitter threads.
+              Transform your long-form content into viral-ready Twitter threads instantly.
             </p>
           </div>
         </header>
         <main className="max-w-3xl mx-auto space-y-8">
-          <div className="relative">
+          <div className="relative group">
             <Textarea
-              placeholder="What's on your mind? Paste your essay, article, or long-form thoughts..."
-              className="min-h-[350px] text-lg p-8 resize-none shadow-sm transition-all focus:shadow-xl border-2 focus:border-blue-500/30 bg-card"
+              placeholder="Paste your essay, article, or thoughts here..."
+              className="min-h-[350px] text-lg p-8 resize-none shadow-sm transition-all focus:shadow-2xl border-2 focus:border-blue-500/30 bg-white"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
             />
             <div className="absolute bottom-4 left-4">
-               <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">Editor Mode</span>
+               <span className="text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest select-none">Editor Mode</span>
             </div>
             <div className="absolute bottom-4 right-4 text-xs font-mono text-muted-foreground bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border">
               {inputText.length.toLocaleString()} characters
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-muted/50 p-4 rounded-2xl border border-border/50">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-muted/40 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
             <div className="flex gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
-                className="gap-2 rounded-xl h-11 bg-white"
+                className="gap-2 rounded-xl h-11 bg-white border-2 hover:bg-slate-50 transition-colors"
               >
                 <Upload className="w-4 h-4" />
                 Upload .txt
@@ -144,7 +155,7 @@ export function HomePage() {
                 variant="ghost"
                 size="sm"
                 onClick={handleClear}
-                className="gap-2 h-11 rounded-xl text-muted-foreground hover:text-destructive"
+                className="gap-2 h-11 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5"
               >
                 <Eraser className="w-4 h-4" />
                 Clear
@@ -161,7 +172,7 @@ export function HomePage() {
               ) : (
                 <Scissors className="w-4 h-4" />
               )}
-              Generate Thread
+              {isSplitting ? 'Processing...' : 'Generate Thread'}
             </Button>
           </div>
           <motion.div
@@ -169,11 +180,11 @@ export function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-blue-50 border border-blue-100 p-4 rounded-2xl flex gap-4 text-sm text-blue-900/80"
           >
-            <div className="bg-blue-100 p-2 rounded-xl h-fit">
+            <div className="bg-blue-100 p-2 rounded-xl h-fit shrink-0">
               <Info className="w-4 h-4 text-blue-600" />
             </div>
             <p className="leading-relaxed">
-              <strong>Splitter Update:</strong> We now preserve your manual line breaks and list formatting. Great for bullet points!
+              <strong>Splitter Engine:</strong> We automatically add numbering (e.g. 1/5) and ensure no words are cut in half. Long URLs are handled gracefully.
             </p>
           </motion.div>
         </main>
@@ -188,8 +199,8 @@ export function HomePage() {
             >
               <div className="flex flex-col md:flex-row md:items-end justify-between border-b pb-8 gap-6">
                 <div className="space-y-1">
-                  <h2 className="text-3xl font-black tracking-tight">Generated Results</h2>
-                  <p className="text-muted-foreground">Review and post your {tweets.length}-tweet thread.</p>
+                  <h2 className="text-3xl font-black tracking-tight">Thread Preview</h2>
+                  <p className="text-muted-foreground">Your thread has been split into {tweets.length} parts.</p>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button
@@ -206,14 +217,14 @@ export function HomePage() {
                     onClick={handleStartFullThread}
                   >
                     <Rocket className="w-5 h-5" />
-                    Start Full Thread
+                    Start Thread
                   </Button>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {tweets.map((tweet, index) => (
                   <TweetCard
-                    key={`${index}-${tweet.length}`}
+                    key={`tweet-${index}-${tweet.length}`}
                     text={tweet}
                     index={index}
                     total={tweets.length}
@@ -227,7 +238,7 @@ export function HomePage() {
                   className="group gap-2 text-muted-foreground hover:text-primary h-12 px-8 rounded-2xl"
                 >
                   <ChevronUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
-                  Back to Editor
+                  Back to Top
                 </Button>
               </div>
             </motion.section>
@@ -237,28 +248,35 @@ export function HomePage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-24 text-center py-32 border-2 border-dashed border-border/60 rounded-[2.5rem] bg-muted/20"
+            className="mt-24 text-center py-32 border-2 border-dashed border-border/60 rounded-[2.5rem] bg-white/50 backdrop-blur-sm"
           >
             <div className="relative inline-block mb-6">
                <div className="absolute inset-0 bg-blue-500/5 blur-2xl rounded-full" />
-               <Sparkles className="relative w-16 h-16 mx-auto text-blue-500/40" />
+               <Sparkles className="relative w-16 h-16 mx-auto text-blue-500/20" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">Ready for your ideas</h3>
             <p className="text-muted-foreground/60 max-w-xs mx-auto">
-              Paste text or upload a file above to see your generated thread cards here.
+              Your generated thread cards will appear here after processing.
             </p>
           </motion.div>
         )}
       </div>
       <footer className="py-16 text-center border-t border-border/50 mt-32">
         <div className="flex justify-center gap-6 mb-8">
-          <Twitter className="w-5 h-5 text-muted-foreground hover:text-blue-500 transition-colors cursor-pointer" />
+          <a 
+            href="https://x.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group p-3 rounded-full bg-white border border-border shadow-sm hover:shadow-md transition-all"
+          >
+            <Twitter className="w-5 h-5 text-muted-foreground group-hover:text-blue-500 transition-colors" />
+          </a>
         </div>
         <p className="text-sm font-medium text-muted-foreground/60">
-          © {new Date().getFullYear()} ThreadCraft. Built for creators.
+          © {new Date().getFullYear()} ThreadCraft. Built for modern storytellers.
         </p>
       </footer>
-      <Toaster richColors position="top-center" expand={false} />
+      <Toaster richColors position="bottom-right" />
     </div>
   );
 }
