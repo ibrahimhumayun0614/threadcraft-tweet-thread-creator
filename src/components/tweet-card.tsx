@@ -31,8 +31,8 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
       transition={{ duration: 0.3, delay: index * 0.05 }}
       layout
     >
-      <Card className="h-full flex flex-col border-border bg-card shadow-sm hover:shadow-md transition-all group">
-        <CardHeader className="flex flex-row items-center justify-between py-3 px-4 bg-muted/20 group-hover:bg-muted/40 transition-colors">
+      <Card className="h-full flex flex-col border-border bg-white shadow-sm hover:shadow-md transition-all group">
+        <CardHeader className="flex flex-row items-center justify-between py-3 px-4 bg-slate-50 group-hover:bg-slate-100 transition-colors">
           <span className="text-xs font-bold text-primary tracking-wider uppercase">
             Tweet {index + 1}
           </span>
@@ -45,12 +45,12 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
             {text}
           </p>
         </CardContent>
-        <CardFooter className="p-3 border-t bg-muted/5 flex justify-end gap-2">
+        <CardFooter className="p-3 border-t bg-slate-50/30 flex justify-end gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={handlePostOnX}
-            className="h-8 gap-2 text-xs hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/30 transition-colors"
+            className="h-8 gap-2 text-xs hover:bg-blue-50 hover:text-blue-600 transition-colors"
           >
             <Twitter className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Post Part</span>
@@ -63,7 +63,7 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-green-500" />
+                <Check className="w-3.5 h-3.5 text-green-600" />
                 <span>Copied</span>
               </>
             ) : (

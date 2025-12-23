@@ -13,7 +13,7 @@ export function cn(...inputs: ClassValue[]) {
 export async function copyToClipboard(text: string): Promise<boolean> {
   // 1. Modern Clipboard API (Requires HTTPS/Localhost and user gesture)
   try {
-    if (navigator.clipboard && window.isSecureContext) {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
       return true;
     }
@@ -24,7 +24,6 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     const textArea = document.createElement("textarea");
     textArea.value = text;
-    // Ensure the textarea is off-screen but visible enough to be selectable
     textArea.style.position = "fixed";
     textArea.style.left = "-9999px";
     textArea.style.top = "0";
@@ -39,7 +38,6 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     console.warn("document.execCommand fallback failed", err);
   }
   // 3. Final Fallback: Manual Prompt
-  // This is useful in heavily restricted iframe environments where clipboard access is blocked
   try {
     const result = window.prompt("Your browser blocked automatic copying. Copy the text below manually (Ctrl+C / Cmd+C):", text);
     return result !== null;
