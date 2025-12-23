@@ -93,7 +93,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-background bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-8 md:py-12 lg:py-16">
+        <div className="py-8 md:py-10 lg:py-12">
           <header className="text-center space-y-6 mb-16">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -256,8 +256,8 @@ export function HomePage() {
               animate={{ opacity: 1, scale: 1 }}
               className="mt-24 text-center py-32 border-2 border-dashed border-border/60 rounded-[3rem] bg-white/30 backdrop-blur-sm"
             >
-              <motion.div 
-                animate={{ y: [0, -10, 0] }} 
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="relative inline-block mb-8"
               >
@@ -271,17 +271,7 @@ export function HomePage() {
             </motion.div>
           )}
         </div>
-        <footer className="py-20 text-center border-t border-border/50 mt-32">
-          <div className="flex justify-center gap-6 mb-8">
-            <a
-              href="https://x.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-3 rounded-2xl bg-white border border-border shadow-sm hover:shadow-md hover:scale-110 transition-all duration-300"
-            >
-              <Twitter className="w-5 h-5 text-muted-foreground group-hover:text-blue-500 transition-colors" />
-            </a>
-          </div>
+        <footer className="py-12 text-center border-t border-border/50 mt-24">
           <p className="text-sm font-bold text-muted-foreground/50 tracking-wider">
             © {new Date().getFullYear()} THREAD CRAFT — MADE FOR MODERN STORYTELLERS
           </p>
