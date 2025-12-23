@@ -34,7 +34,7 @@ export function HomePage() {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
-      toast.success(`Generated ${chunks.length} tweets!`);
+      toast.success(`Thread Craft generated ${chunks.length} tweets!`);
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 150);
@@ -43,7 +43,7 @@ export function HomePage() {
   const handleClear = () => {
     setInputText('');
     setTweets([]);
-    toast.info('Cleared editor');
+    toast.info('Thread Craft editor cleared');
   };
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,7 +57,7 @@ export function HomePage() {
       const content = event.target?.result;
       if (typeof content === 'string') {
         setInputText(content);
-        toast.success('File content imported successfully');
+        toast.success('File content imported to Thread Craft');
       }
     };
     reader.onerror = () => toast.error('Failed to read file');
@@ -72,7 +72,7 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Full thread copied to clipboard');
+      toast.success('Full Thread Craft thread copied');
     } else {
       toast.error('Failed to copy. Please try manual selection.');
     }
@@ -82,7 +82,7 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Ready to post!', {
+      toast.success('Thread Craft is ready!', {
         description: 'First tweet opened. Full thread is in your clipboard.',
         duration: 5000,
       });
@@ -96,7 +96,7 @@ export function HomePage() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] min-h-screen font-sans">
       <div className="py-8 md:py-10 lg:py-12">
         <header className="text-center space-y-6 mb-16">
           <motion.div
@@ -111,7 +111,7 @@ export function HomePage() {
           </motion.div>
           <div className="space-y-3">
             <h1 className="text-4xl md:text-6xl font-display font-black tracking-tight text-foreground">
-              Thread<span className="text-blue-600">Craft</span>
+              Thread Craft
             </h1>
             <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed">
               Transform your long-form content into viral-ready Twitter threads instantly.
@@ -263,9 +263,9 @@ export function HomePage() {
       </div>
       <footer className="py-16 text-center border-t border-border/50 mt-32">
         <div className="flex justify-center gap-6 mb-8">
-          <a 
-            href="https://x.com" 
-            target="_blank" 
+          <a
+            href="https://x.com"
+            target="_blank"
             rel="noopener noreferrer"
             className="group p-3 rounded-full bg-white border border-border shadow-sm hover:shadow-md transition-all"
           >
@@ -273,7 +273,7 @@ export function HomePage() {
           </a>
         </div>
         <p className="text-sm font-medium text-muted-foreground/60">
-          © {new Date().getFullYear()} ThreadCraft. Built for modern storytellers.
+          © {new Date().getFullYear()} Thread Craft. Built for modern storytellers.
         </p>
       </footer>
       <Toaster richColors position="bottom-right" />

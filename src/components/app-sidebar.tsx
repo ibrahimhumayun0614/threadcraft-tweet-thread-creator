@@ -1,6 +1,5 @@
-/* This is a demo sidebar. **COMPULSORY** Edit this file to customize the sidebar OR remove it from appLayout OR don't use appLayout at all */
 import React from "react";
-import { Home, Layers, Compass, Star, Settings, LifeBuoy } from "lucide-react";
+import { Home, Layers, Compass, Star, Twitter } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,28 +15,29 @@ import {
   SidebarMenuAction,
   SidebarMenuBadge,
 } from "@/components/ui/sidebar";
-
 export function AppSidebar(): JSX.Element {
   return (
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1">
-          <div className="h-6 w-6 rounded-md bg-gradient-to-br from-indigo-500 to-purple-500" />
-          <span className="text-sm font-medium">Demo Sidebar</span>
+          <div className="h-6 w-6 rounded-md bg-blue-600 flex items-center justify-center">
+            <Twitter className="size-3.5 text-white" />
+          </div>
+          <span className="text-sm font-bold tracking-tight">Thread Craft</span>
         </div>
-        <SidebarInput placeholder="Search" />
+        <SidebarInput placeholder="Search threads..." />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive>
-                <a href="#"><Home /> <span>Home</span></a>
+                <a href="#"><Home /> <span>Dashboard</span></a>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#"><Layers /> <span>Projects</span></a>
+                <a href="#"><Layers /> <span>My Drafts</span></a>
               </SidebarMenuButton>
               <SidebarMenuAction>
                 <Star className="size-4" />
@@ -45,28 +45,28 @@ export function AppSidebar(): JSX.Element {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#"><Compass /> <span>Explore</span></a>
+                <a href="#"><Compass /> <span>Templates</span></a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
-
         <SidebarSeparator />
-
         <SidebarGroup>
-          <SidebarGroupLabel>Quick Links</SidebarGroupLabel>
+          <SidebarGroupLabel>Library</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#"><Star /> <span>Starred</span></a>
+                <a href="#"><Star /> <span>Favorites</span></a>
               </SidebarMenuButton>
-              <SidebarMenuBadge>5</SidebarMenuBadge>
+              <SidebarMenuBadge>12</SidebarMenuBadge>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <div className="px-2 text-xs text-muted-foreground">A simple shadcn sidebar</div>
+        <div className="px-2 py-4 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+          Thread Craft v1.0
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

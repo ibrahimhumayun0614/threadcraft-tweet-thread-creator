@@ -1,7 +1,9 @@
 /**
+ * Thread Craft Splitter Engine
+ * 
  * Splits a long string into chunks of maximum 280 characters,
- * respecting word/line boundaries, preserving single newlines,
- * and appending "n/total" suffixes.
+ * respecting word/line boundaries, preserving formatting where possible,
+ * and appending "n/total" suffixes for Twitter threads.
  */
 export function splitText(text: string, limit: number = 280): string[] {
   if (!text || !text.trim()) return [];
