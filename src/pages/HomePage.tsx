@@ -209,7 +209,21 @@ export function HomePage() {
                 <TweetCard key={`${index}-${tweet.length}`} text={tweet} index={index} total={tweets.length} />
               ))}
             </div>
-            <div className="flex justify-center pt-16">
+            {/* Posting Guidance Instruction Note */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="pt-12 pb-8 px-6 text-center bg-slate-50/50 rounded-2xl border border-slate-200/60 max-w-2xl mx-auto"
+            >
+              <div className="flex items-center justify-center gap-2 text-muted-foreground/80 text-sm font-medium">
+                <Info className="w-4 h-4 shrink-0" />
+                <p>
+                  To create a thread on X: Post #1 first, then reply to it with #2 (and so on). Use "Post on X" or Copy!
+                </p>
+              </div>
+            </motion.div>
+            <div className="flex justify-center pt-8">
               <Button variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group gap-2 text-muted-foreground hover:text-primary h-12 px-8 rounded-2xl font-semibold">
                 <ChevronUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform" /> Back to Top
               </Button>
