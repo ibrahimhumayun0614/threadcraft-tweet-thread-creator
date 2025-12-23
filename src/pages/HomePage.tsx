@@ -8,8 +8,7 @@ import {
   Info,
   Rocket,
   ChevronUp,
-  FileText,
-  X as XIcon
+  FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, Toaster } from 'sonner';
@@ -24,7 +23,6 @@ export function HomePage() {
   const [tweets, setTweets] = useState<string[]>([]);
   const [isSplitting, setIsSplitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     document.title = "Thread Craft | Professional X Thread Creator";
@@ -44,7 +42,6 @@ export function HomePage() {
       setTweets(chunks);
       setIsSplitting(false);
       toast.success(`Thread Craft: Crafted ${chunks.length} posts successfully!`);
-      // Improved scrolling logic with a slight delay to allow DOM to render
       setTimeout(() => {
         if (scrollAnchorRef.current) {
           scrollAnchorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -92,8 +89,8 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Story Ready!', {
-        description: 'First post opened in X. The complete thread structure is saved to your clipboard for easy pasting.',
+      toast.success('Thread Craft: Ready to Post!', {
+        description: 'The complete thread structure is saved to your clipboard for easy pasting. We have opened the first post in X for you.',
       });
     }
     const url = `https://x.com/intent/post?text=${encodeURIComponent(tweets[0])}`;
@@ -130,7 +127,7 @@ export function HomePage() {
                 <span className="font-mono">{inputText.length.toLocaleString()}</span> Chars
               </div>
             </div>
-            <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Engine 1.2</span>
+            <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Engine 1.3</span>
           </div>
         </div>
         <div className="sticky bottom-8 z-40">
@@ -188,7 +185,6 @@ export function HomePage() {
       <AnimatePresence>
         {tweets.length > 0 && (
           <motion.section
-            ref={resultsRef}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}

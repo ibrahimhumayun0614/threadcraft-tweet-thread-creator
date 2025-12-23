@@ -24,8 +24,11 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
   };
   const charCount = text.length;
   const getBadgeStyles = () => {
-    if (charCount > 270) return 'bg-destructive/10 text-destructive font-black border-destructive/20 ring-1 ring-destructive/10 shadow-sm';
+    // Critical state: 275+ characters
+    if (charCount > 275) return 'bg-destructive/10 text-destructive font-black border-destructive/20 ring-2 ring-destructive/10 shadow-sm animate-pulse';
+    // Warning state: 250-274 characters
     if (charCount > 250) return 'bg-orange-500/10 text-orange-600 font-black border-orange-500/20';
+    // Default professional state
     return 'text-blue-600 bg-blue-50 border-blue-100 font-bold';
   };
   return (
