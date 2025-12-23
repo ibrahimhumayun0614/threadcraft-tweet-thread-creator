@@ -1,138 +1,221 @@
-// Home page of the app.
-// Currently a demo placeholder "please wait" screen.
-// Replace this file with your actual app UI. Do not delete it to use some other file as homepage. Simply replace the entire contents of this file.
-
-import { useEffect, useMemo, useState } from 'react'
-import { Sparkles } from 'lucide-react'
-
-import { ThemeToggle } from '@/components/ThemeToggle'
-import { HAS_TEMPLATE_DEMO, TemplateDemo } from '@/components/TemplateDemo'
-import { Button } from '@/components/ui/button'
-import { Toaster, toast } from '@/components/ui/sonner'
-
-function formatDuration(ms: number): string {
-  const total = Math.max(0, Math.floor(ms / 1000))
-  const m = Math.floor(total / 60)
-  const s = total % 60
-  return `${m}:${s.toString().padStart(2, '0')}`
-}
-
+import React, { useState, useRef, ChangeEvent } from 'react';
+import { 
+  Sparkles, 
+  Trash2, 
+  Scissors, 
+  Upload, 
+  Twitter, 
+  Eraser,
+  Copy
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast, Toaster } from 'sonner';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { TweetCard } from '@/components/tweet-card';
+import { splitText } from '@/lib/splitter';
 export function HomePage() {
-  const [coins, setCoins] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
-  const [startedAt, setStartedAt] = useState<number | null>(null)
-  const [elapsedMs, setElapsedMs] = useState(0)
-
-  useEffect(() => {
-    if (!isRunning || startedAt === null) return
-
-    const t = setInterval(() => {
-      setElapsedMs(Date.now() - startedAt)
-    }, 250)
-
-    return () => clearInterval(t)
-  }, [isRunning, startedAt])
-
-  const formatted = useMemo(() => formatDuration(elapsedMs), [elapsedMs])
-
-  const onPleaseWait = () => {
-    setCoins((c) => c + 1)
-
-    if (!isRunning) {
-      // Resume from the current elapsed time
-      setStartedAt(Date.now() - elapsedMs)
-      setIsRunning(true)
-      toast.success('Building your app…', {
-        description: "Hang tight — we're setting everything up.",
-      })
-      return
+  const [inputText, setInputText] = useState('');
+  const [tweets, setTweets] = useState<string[]>([]);
+  const [isSplitting, setIsSplitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const handleSplit = () => {
+    if (!inputText.trim()) {
+      toast.error('Please enter some text first');
+      return;
     }
-
-    setIsRunning(false)
-    toast.info('Still working…', {
-      description: 'You can come back in a moment.',
-    })
-  }
-
-  const onReset = () => {
-    setCoins(0)
-    setIsRunning(false)
-    setStartedAt(null)
-    setElapsedMs(0)
-    toast('Reset complete')
-  }
-
-  const onAddCoin = () => {
-    setCoins((c) => c + 1)
-    toast('Coin added')
-  }
-
+    setIsSplitting(true);
+    // Add a slight delay for better visual feedback
+    setTimeout(() => {
+      const chunks = splitText(inputText);
+      setTweets(chunks);
+      setIsSplitting(false);
+      toast.success(`Split into ${chunks.length} tweets!`);
+      // Smooth scroll to results
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }, 400);
+  };
+  const handleClear = () => {
+    setInputText('');
+    setTweets([]);
+    toast.info('Cleared all content');
+  };
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.match('text.*') && !file.name.endsWith('.txt')) {
+      toast.error('Please upload a .txt file');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result;
+      if (typeof content === 'string') {
+        setInputText(content);
+        toast.success('File uploaded successfully');
+      }
+    };
+    reader.readAsText(file);
+    // Reset file input value so same file can be uploaded again
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+  const handleCopyTweet = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard');
+  };
+  const handleCopyAll = () => {
+    const allText = tweets.join('\n\n---\n\n');
+    navigator.clipboard.writeText(allText);
+    toast.success('Copied entire thread');
+  };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden relative">
-      <ThemeToggle />
-      <div className="absolute inset-0 bg-gradient-rainbow opacity-10 dark:opacity-20 pointer-events-none" />
-
-      <div className="text-center space-y-8 relative z-10 animate-fade-in w-full">
-        <div className="flex justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-primary floating">
-            <Sparkles className="w-8 h-8 text-white rotating" />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8 md:py-10 lg:py-12">
+        <ThemeToggle />
+        {/* Hero Section */}
+        <header className="text-center space-y-4 mb-12">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="flex justify-center"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-lg text-primary-foreground">
+              <Twitter className="w-8 h-8" />
+            </div>
+          </motion.div>
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tight">
+              Thread<span className="text-blue-500">Craft</span>
+            </h1>
+            <p className="text-muted-foreground max-w-lg mx-auto">
+              Turn your long-form articles into perfectly formatted Twitter threads in seconds.
+            </p>
           </div>
-        </div>
-
-        <div className="space-y-3">
-          <h1 className="text-5xl md:text-7xl font-display font-bold text-balance leading-tight">
-            Creating your <span className="text-gradient">app</span>
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto text-pretty">
-            Your application would be ready soon.
-          </p>
-        </div>
-
-        {HAS_TEMPLATE_DEMO ? (
-          <div className="max-w-5xl mx-auto text-left">
-            <TemplateDemo />
+        </header>
+        {/* Input Section */}
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="relative group">
+            <Textarea
+              placeholder="Paste your long text here..."
+              className="min-h-[300px] text-base p-6 resize-none shadow-sm transition-all focus:shadow-md"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+            />
+            <div className="absolute bottom-4 right-4 text-xs text-muted-foreground font-mono bg-background/80 px-2 py-1 rounded">
+              {inputText.length} characters
+            </div>
           </div>
-        ) : (
-          <>
-            <div className="flex justify-center gap-4">
+          <div className="flex flex-wrap gap-3 items-center justify-center sm:justify-between">
+            <div className="flex gap-2">
               <Button
-                size="lg"
-                onClick={onPleaseWait}
-                className="btn-gradient px-8 py-4 text-lg font-semibold hover:-translate-y-0.5 transition-all duration-200"
-                aria-live="polite"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                className="gap-2"
               >
-                Please Wait
+                <Upload className="w-4 h-4" />
+                Upload .txt
+              </Button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept=".txt"
+                className="hidden"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClear}
+                className="gap-2 text-muted-foreground hover:text-destructive"
+              >
+                <Eraser className="w-4 h-4" />
+                Clear
               </Button>
             </div>
-
-            <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div>
-                Time elapsed:{' '}
-                <span className="font-medium tabular-nums text-foreground">{formatted}</span>
+            <Button
+              size="lg"
+              onClick={handleSplit}
+              disabled={isSplitting || !inputText.trim()}
+              className="bg-blue-600 hover:bg-blue-700 text-white min-w-[160px] gap-2 shadow-blue-500/20 shadow-lg"
+            >
+              {isSplitting ? (
+                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Scissors className="w-4 h-4" />
+              )}
+              Split into Tweets
+            </Button>
+          </div>
+        </div>
+        {/* Results Section */}
+        <AnimatePresence>
+          {tweets.length > 0 && (
+            <motion.section
+              ref={resultsRef}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              className="mt-20 space-y-8"
+            >
+              <div className="flex items-center justify-between border-b pb-4">
+                <div>
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    Generated Thread
+                    <span className="text-sm font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                      {tweets.length} parts
+                    </span>
+                  </h2>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={handleCopyAll}
+                >
+                  <Copy className="w-4 h-4" />
+                  Copy Entire Thread
+                </Button>
               </div>
-              <div>
-                Coins:{' '}
-                <span className="font-medium tabular-nums text-foreground">{coins}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {tweets.map((tweet, index) => (
+                  <TweetCard
+                    key={`${index}-${tweet.substring(0, 10)}`}
+                    text={tweet}
+                    index={index}
+                    total={tweets.length}
+                    onCopy={handleCopyTweet}
+                  />
+                ))}
               </div>
-            </div>
-
-            <div className="flex justify-center gap-2">
-              <Button variant="outline" size="sm" onClick={onReset}>
-                Reset
-              </Button>
-              <Button variant="outline" size="sm" onClick={onAddCoin}>
-                Add Coin
-              </Button>
-            </div>
-          </>
+              <div className="flex justify-center pt-8">
+                <Button
+                  variant="ghost"
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="text-muted-foreground"
+                >
+                  Back to Top
+                </Button>
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+        {/* Empty State */}
+        {tweets.length === 0 && !isSplitting && (
+          <div className="mt-20 text-center py-20 border-2 border-dashed rounded-3xl opacity-40">
+            <Sparkles className="w-10 h-10 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Generated tweets will appear here</p>
+          </div>
         )}
       </div>
-
-      <footer className="absolute bottom-8 text-center text-muted-foreground/80">
-        <p>Powered by Cloudflare</p>
+      <Toaster richColors position="bottom-center" />
+      <footer className="py-12 text-center text-sm text-muted-foreground border-t mt-20">
+        <p>© {new Date().getFullYear()} ThreadCraft. No data is stored on our servers.</p>
       </footer>
-
-      <Toaster richColors closeButton />
     </div>
-  )
+  );
 }
