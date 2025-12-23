@@ -6,7 +6,8 @@ import {
   Twitter,
   Eraser,
   Copy,
-  Info
+  Info,
+  Rocket
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, Toaster } from 'sonner';
@@ -28,13 +29,11 @@ export function HomePage() {
       return;
     }
     setIsSplitting(true);
-    // Artificial delay for UX "processing" feel
     setTimeout(() => {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
       toast.success(`Successfully split into ${chunks.length} tweets!`);
-      // Smooth scroll to results
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 150);
@@ -64,15 +63,29 @@ export function HomePage() {
     reader.readAsText(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
+  const formatThreadForClipboard = (items: string[]) => {
+    return items.map((t, i) => {
+      if (i === 0) return t;
+      return `\n\n--- Tweet ${i + 1} ---\n\n${t}`;
+    }).join('');
+  };
   const handleCopyAll = async () => {
-    // Join with clear separators for manual reading/pasting
-    const allText = tweets.join('\n\n---\n\n');
+    const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) toast.success('Copied entire thread to clipboard');
   };
-  const handleStartThread = () => {
+  const handleStartFullThread = async () => {
     if (tweets.length === 0) return;
-    // Direct intent for the first tweet to initiate the thread pattern
+    // 1. Copy formatted thread to clipboard
+    const allText = formatThreadForClipboard(tweets);
+    const success = await copyToClipboard(allText);
+    if (success) {
+      toast.success('Thread copied!', {
+        description: 'Post first tweet, then reply to it with the remaining parts from your clipboard.',
+        duration: 6000,
+      });
+    }
+    // 2. Open first tweet in X
     const firstTweet = tweets[0];
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(firstTweet)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -154,13 +167,13 @@ export function HomePage() {
               Split into Tweets
             </Button>
           </div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-4 rounded-xl flex gap-3 text-sm text-blue-800 dark:text-blue-300 shadow-sm"
           >
             <Info className="w-5 h-5 flex-shrink-0 text-blue-500" />
-            <p><strong>Pro Tip:</strong> Post the first tweet, then reply to your own post with subsequent tweets to link them together as a thread.</p>
+            <p><strong>Pro Tip:</strong> Use the "Start Full Thread" button to copy everything at once and open the first post automatically.</p>
           </motion.div>
         </main>
         <AnimatePresence>
@@ -185,7 +198,7 @@ export function HomePage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="gap-2 h-9"
+                    className="gap-2 h-10 px-4"
                     onClick={handleCopyAll}
                   >
                     <Copy className="w-4 h-4" />
@@ -193,12 +206,12 @@ export function HomePage() {
                   </Button>
                   <Button
                     variant="default"
-                    size="sm"
-                    className="gap-2 bg-blue-600 hover:bg-blue-700 h-9"
-                    onClick={handleStartThread}
+                    size="default"
+                    className="gap-2 bg-blue-600 hover:bg-blue-700 h-10 px-6 font-semibold shadow-lg shadow-blue-500/20"
+                    onClick={handleStartFullThread}
                   >
-                    <Twitter className="w-4 h-4" />
-                    <span>Post First Tweet</span>
+                    <Rocket className="w-4 h-4" />
+                    <span>Start Full Thread</span>
                   </Button>
                 </div>
               </div>
@@ -236,7 +249,7 @@ export function HomePage() {
         <div className="flex justify-center gap-4 mb-4">
           <Twitter className="w-4 h-4 opacity-40 hover:opacity-100 cursor-pointer transition-opacity" />
         </div>
-        <p>© {new Date().getFullYear()} ThreadCraft. No content is ever stored on our servers.</p>
+        <p>© {new Date().getFullYear()} ThreadCraft. Minimalist & Fast.</p>
       </footer>
       <Toaster richColors position="bottom-right" />
     </div>
