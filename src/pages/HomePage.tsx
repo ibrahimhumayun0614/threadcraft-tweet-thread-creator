@@ -3,13 +3,13 @@ import {
   Sparkles,
   Scissors,
   Upload,
-  X,
   Eraser,
   Copy,
   Info,
   Rocket,
   ChevronUp,
-  FileText
+  FileText,
+  X as XIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, Toaster } from 'sonner';
@@ -101,17 +101,7 @@ export function HomePage() {
   };
   return (
     <AppLayout container className="min-h-screen bg-background bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px]">
-      <header className="text-center space-y-6 mb-16">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="flex justify-center"
-        >
-          <div className="w-16 h-16 rounded-3xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/20 text-white">
-            <X className="w-9 h-9" />
-          </div>
-        </motion.div>
+      <header className="text-center space-y-2 mb-12">
         <div className="space-y-4">
           <h1 className="text-4xl md:text-6xl font-display font-black tracking-tight text-foreground">
             Thread Craft
@@ -193,7 +183,6 @@ export function HomePage() {
             <strong>Engine Protocol:</strong> Thread Craft respects word integrity and protects formatting while automatically adding safe thread counters for X.
           </p>
         </motion.div>
-        {/* Dedicated scroll anchor for better mobile results positioning */}
         <div ref={scrollAnchorRef} className="h-1 -mt-10" />
       </main>
       <AnimatePresence>
