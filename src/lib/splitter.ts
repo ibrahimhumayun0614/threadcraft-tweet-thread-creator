@@ -1,8 +1,8 @@
 /**
- * Thread Craft Splitter Engine v1.1 (Production)
+ * Thread Craft Splitter Engine v1.2 (Production - X Branding)
  *
  * Professional tool for crafting long strings into perfectly formatted
- * Twitter threads. Respects word/line boundaries, preserves formatting,
+ * X (Twitter) threads. Respects word/line boundaries, preserves formatting,
  * and handles thread indexing (n/total) automatically with high safety margins.
  */
 export function splitText(text: string, limit: number = 280): string[] {
@@ -10,7 +10,7 @@ export function splitText(text: string, limit: number = 280): string[] {
   // Buffer for " (999/999)" suffix safety.
   // We reserve 14 characters for the suffix to be extremely safe (e.g., " 100/100").
   const safeLimit = Math.max(limit, 30);
-  const reservedSpace = 14; 
+  const reservedSpace = 14;
   const effectiveLimit = safeLimit - reservedSpace;
   // Normalize line endings and segment text while preserving whitespace
   const normalizedText = text.replace(/\r\n/g, "\n");
