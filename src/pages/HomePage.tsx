@@ -12,12 +12,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, Toaster } from 'sonner';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { TweetCard } from '@/components/tweet-card';
 import { splitText } from '@/lib/splitter';
-import { copyToClipboard, cn } from '@/lib/utils';
+import { copyToClipboard } from '@/lib/utils';
 export function HomePage() {
   const [inputText, setInputText] = useState('');
   const [tweets, setTweets] = useState<string[]>([]);
@@ -30,7 +29,6 @@ export function HomePage() {
       return;
     }
     setIsSplitting(true);
-    // Artificial delay for UX "processing" feel
     setTimeout(() => {
       const chunks = splitText(inputText);
       setTweets(chunks);
@@ -89,7 +87,6 @@ export function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8 md:py-10 lg:py-12">
-        <ThemeToggle className="fixed top-4 right-4 md:top-8 md:right-8" />
         <header className="text-center space-y-6 mb-16">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -114,24 +111,24 @@ export function HomePage() {
           <div className="relative">
             <Textarea
               placeholder="What's on your mind? Paste your essay, article, or long-form thoughts..."
-              className="min-h-[350px] text-lg p-8 resize-none shadow-sm transition-all focus:shadow-xl border-2 focus:border-blue-500/30 bg-card/50 backdrop-blur-sm"
+              className="min-h-[350px] text-lg p-8 resize-none shadow-sm transition-all focus:shadow-xl border-2 focus:border-blue-500/30 bg-card"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
             />
             <div className="absolute bottom-4 left-4">
                <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">Editor Mode</span>
             </div>
-            <div className="absolute bottom-4 right-4 text-xs font-mono text-muted-foreground bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border">
+            <div className="absolute bottom-4 right-4 text-xs font-mono text-muted-foreground bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border">
               {inputText.length.toLocaleString()} characters
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-muted/30 p-4 rounded-2xl border border-border/50">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-muted/50 p-4 rounded-2xl border border-border/50">
             <div className="flex gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
-                className="gap-2 rounded-xl h-11"
+                className="gap-2 rounded-xl h-11 bg-white"
               >
                 <Upload className="w-4 h-4" />
                 Upload .txt
@@ -170,10 +167,10 @@ export function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 p-4 rounded-2xl flex gap-4 text-sm text-blue-900/80 dark:text-blue-200/80"
+            className="bg-blue-50 border border-blue-100 p-4 rounded-2xl flex gap-4 text-sm text-blue-900/80"
           >
-            <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-xl h-fit">
-              <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <div className="bg-blue-100 p-2 rounded-xl h-fit">
+              <Info className="w-4 h-4 text-blue-600" />
             </div>
             <p className="leading-relaxed">
               <strong>Splitter Update:</strong> We now preserve your manual line breaks and list formatting. Great for bullet points!
@@ -197,7 +194,7 @@ export function HomePage() {
                 <div className="flex flex-wrap gap-3">
                   <Button
                     variant="outline"
-                    className="gap-2 h-12 px-6 rounded-xl border-2"
+                    className="gap-2 h-12 px-6 rounded-xl border-2 bg-white"
                     onClick={handleCopyAll}
                   >
                     <Copy className="w-4 h-4" />
@@ -237,13 +234,13 @@ export function HomePage() {
           )}
         </AnimatePresence>
         {!tweets.length && !isSplitting && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-24 text-center py-32 border-2 border-dashed border-border/60 rounded-[2.5rem] bg-muted/10"
+            className="mt-24 text-center py-32 border-2 border-dashed border-border/60 rounded-[2.5rem] bg-muted/20"
           >
             <div className="relative inline-block mb-6">
-               <div className="absolute inset-0 bg-blue-500/10 blur-2xl rounded-full" />
+               <div className="absolute inset-0 bg-blue-500/5 blur-2xl rounded-full" />
                <Sparkles className="relative w-16 h-16 mx-auto text-blue-500/40" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">Ready for your ideas</h3>
