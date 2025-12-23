@@ -1,24 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { useState } from 'react';
+import { copyToClipboard } from '@/lib/utils';
 interface TweetCardProps {
   text: string;
   index: number;
   total: number;
-  onCopy: (text: string) => void;
 }
-export function TweetCard({ text, index, total, onCopy }: TweetCardProps) {
+export function TweetCard({ text, index, total }: TweetCardProps) {
   const [copied, setCopied] = useState(false);
-  const handleCopy = () => {
-    onCopy(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    const success = await copyToClipboard(text);
+    if (success) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+  const handlePostOnX = () => {
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
   const charCount = text.length;
-  const isCloseToLimit = charCount > 260;
+  const isCloseToLimit = charCount > 270;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -39,7 +45,16 @@ export function TweetCard({ text, index, total, onCopy }: TweetCardProps) {
             {text}
           </p>
         </CardContent>
-        <CardFooter className="p-3 border-t bg-muted/10 flex justify-end">
+        <CardFooter className="p-3 border-t bg-muted/10 flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handlePostOnX}
+            className="h-8 gap-2 text-xs hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950"
+          >
+            <Twitter className="w-3.5 h-3.5" />
+            <span>Post on X</span>
+          </Button>
           <Button
             variant="ghost"
             size="sm"
@@ -48,12 +63,12 @@ export function TweetCard({ text, index, total, onCopy }: TweetCardProps) {
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-green-500" />
+                <Check className="w-3.5 h-3.5 text-green-500" />
                 <span>Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3 h-3" />
+                <Copy className="w-3.5 h-3.5" />
                 <span>Copy</span>
               </>
             )}
