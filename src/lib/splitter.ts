@@ -1,5 +1,5 @@
 /**
- * Thread Craft Splitter Engine v1.2 (Production - X Branding)
+ * Thread Craft Splitter Engine v1.3 (Production - X Branding)
  *
  * Professional tool for crafting long strings into perfectly formatted
  * X (Twitter) threads. Respects word/line boundaries, preserves formatting,
@@ -13,7 +13,6 @@ export function splitText(text: string, limit: number = 280): string[] {
   const reservedSpace = 14;
   const effectiveLimit = safeLimit - reservedSpace;
   // Normalize line endings and segment text while preserving whitespace
-  // Using a regex that captures whitespace ensures we don't lose formatting
   const normalizedText = text.replace(/\r\n/g, "\n");
   const segments = normalizedText.split(/(\s+)/);
   const chunks: string[] = [];
@@ -41,7 +40,7 @@ export function splitText(text: string, limit: number = 280): string[] {
       if (currentChunk.trim()) {
         chunks.push(currentChunk.trim());
       }
-      // If the current segment is just whitespace (like multiple newlines), 
+      // If the current segment is just whitespace (like multiple newlines),
       // we only carry it over if it contains structural information (newlines)
       currentChunk = segment.trim() ? segment : (segment.includes('\n') ? segment : "");
     }
@@ -51,6 +50,10 @@ export function splitText(text: string, limit: number = 280): string[] {
   }
   const total = chunks.length;
   if (total === 0) return [];
+  // Logic Audit: If only one post, do not add "1/1" suffix as it is redundant for single posts.
+  if (total === 1) {
+    return [chunks[0].trim()];
+  }
   return chunks.map((chunk, index) => {
     const suffix = ` ${index + 1}/${total}`;
     return chunk + suffix;
