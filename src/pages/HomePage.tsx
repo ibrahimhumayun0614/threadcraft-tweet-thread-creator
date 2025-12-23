@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEvent, useMemo } from 'react';
+import React, { useState, useRef, ChangeEvent, useMemo, useEffect } from 'react';
 import {
   Sparkles,
   Scissors,
@@ -24,6 +24,10 @@ export function HomePage() {
   const [isSplitting, setIsSplitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  // Set document title for branding
+  useEffect(() => {
+    document.title = "Thread Craft | Create Twitter Threads";
+  }, []);
   const wordCount = useMemo(() => {
     return inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
   }, [inputText]);
@@ -33,14 +37,20 @@ export function HomePage() {
       return;
     }
     setIsSplitting(true);
+    // Artificial delay for UX feel
     setTimeout(() => {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
       toast.success(`Generated ${chunks.length} tweets!`);
+      // Reliable scroll to results
       setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 150);
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 800, behavior: 'smooth' });
+        }
+      }, 100);
     }, 450);
   };
   const handleClear = () => {
@@ -137,7 +147,7 @@ export function HomePage() {
               </div>
             </div>
             {/* Sticky Action Bar */}
-            <div className="sticky bottom-8 z-40">
+            <div className="sticky bottom-8 z-50">
               <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white/80 backdrop-blur-xl p-3 rounded-2xl border border-border shadow-2xl ring-1 ring-black/5">
                 <div className="flex gap-2 w-full sm:w-auto">
                   <Button
@@ -277,7 +287,7 @@ export function HomePage() {
           </p>
         </footer>
       </div>
-      <Toaster richColors position="bottom-right" />
+      <Toaster richColors position="bottom-right" closeButton />
     </div>
   );
 }
