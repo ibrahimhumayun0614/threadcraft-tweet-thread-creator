@@ -8,10 +8,10 @@
 export function splitText(text: string, limit: number = 280): string[] {
   // Early exit for empty or whitespace-only strings
   if (!text || !text.trim()) return [];
-  // Buffer for " (999/999)" suffix (up to 10 chars)
-  // We ensure limit is at least 20 to prevent logical crashes with tiny limits
-  const safeLimit = Math.max(limit, 20);
-  const reservedSpace = 10;
+  // Buffer for " (9999/9999)" suffix (up to 11-12 chars)
+  // We use 12 to be safe for threads up to 9999 tweets.
+  const safeLimit = Math.max(limit, 24);
+  const reservedSpace = 12;
   const effectiveLimit = safeLimit - reservedSpace;
   // Split by whitespace but capture the whitespace to preserve formatting
   // We normalize line endings to \n first for consistency
