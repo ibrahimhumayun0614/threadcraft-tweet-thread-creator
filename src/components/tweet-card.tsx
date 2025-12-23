@@ -1,82 +1,59 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check, X } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { copyToClipboard } from '@/lib/utils';
+import { useState } from 'react';
 interface TweetCardProps {
   text: string;
   index: number;
   total: number;
+  onCopy: (text: string) => void;
 }
-export function TweetCard({ text, index, total }: TweetCardProps) {
+export function TweetCard({ text, index, total, onCopy }: TweetCardProps) {
   const [copied, setCopied] = useState(false);
-  const handleCopy = async () => {
-    const success = await copyToClipboard(text);
-    if (success) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-  const handlePostOnX = () => {
-    const url = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const handleCopy = () => {
+    onCopy(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
   const charCount = text.length;
-  const getBadgeStyles = () => {
-    // Critical state: 275+ characters
-    if (charCount > 275) return 'bg-destructive/10 text-destructive font-black border-destructive/20 ring-2 ring-destructive/10 shadow-sm animate-pulse';
-    // Warning state: 250-274 characters
-    if (charCount > 250) return 'bg-orange-500/10 text-orange-600 font-black border-orange-500/20';
-    // Default professional state
-    return 'text-blue-600 bg-blue-50 border-blue-100 font-bold';
-  };
+  const isCloseToLimit = charCount > 260;
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.3) }}
-      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
     >
-      <Card className="h-full flex flex-col border-border bg-white shadow-sm hover:shadow-xl hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 group overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between py-4 px-5 bg-slate-50/50 group-hover:bg-blue-50/30 transition-colors border-b">
-          <span className="text-[11px] font-black text-slate-800 tracking-widest uppercase selection:bg-none">
-            Post {index + 1} / {total}
+      <Card className="h-full flex flex-col border-border bg-card shadow-sm hover:shadow-md transition-shadow">
+        <CardHeader className="flex flex-row items-center justify-between py-3 px-4 bg-muted/30">
+          <span className="text-xs font-bold text-primary tracking-wider uppercase">
+            Tweet {index + 1} / {total}
           </span>
-          <span className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full border transition-all duration-300 ${getBadgeStyles()}`}>
+          <span className={`text-[10px] font-mono ${isCloseToLimit ? 'text-destructive font-bold' : 'text-muted-foreground'}`}>
             {charCount}/280
           </span>
         </CardHeader>
-        <CardContent className="flex-1 p-6">
-          <p className="text-base leading-relaxed whitespace-pre-wrap text-foreground selection:bg-blue-500/20 antialiased font-medium break-words">
+        <CardContent className="flex-1 p-4">
+          <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground selection:bg-primary/20">
             {text}
           </p>
         </CardContent>
-        <CardFooter className="p-4 border-t bg-slate-50/10 flex justify-end gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handlePostOnX}
-            className="h-9 gap-2 text-xs font-bold hover:bg-slate-900 hover:text-white transition-all rounded-lg active:scale-95 group/btn"
-          >
-            <X className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Post on X</span>
-          </Button>
+        <CardFooter className="p-3 border-t bg-muted/10 flex justify-end">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleCopy}
-            className="h-9 gap-2 text-xs font-bold hover:bg-slate-900 hover:text-white transition-all rounded-lg active:scale-95"
+            className="h-8 gap-2 text-xs hover:bg-accent"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-green-400" />
+                <Check className="w-3 h-3 text-green-500" />
                 <span>Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5" />
+                <Copy className="w-3 h-3" />
                 <span>Copy</span>
               </>
             )}
