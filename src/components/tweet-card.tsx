@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check, Twitter } from 'lucide-react';
+import { Copy, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { copyToClipboard } from '@/lib/utils';
@@ -19,7 +19,7 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
     }
   };
   const handlePostOnX = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    const url = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
   const charCount = text.length;
@@ -39,7 +39,7 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
       <Card className="h-full flex flex-col border-border bg-white shadow-sm hover:shadow-xl hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 group overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between py-4 px-5 bg-slate-50/50 group-hover:bg-blue-50/30 transition-colors border-b">
           <span className="text-[11px] font-black text-slate-800 tracking-widest uppercase selection:bg-none">
-            Tweet {index + 1} / {total}
+            Post {index + 1} / {total}
           </span>
           <span className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full border transition-all duration-300 ${getBadgeStyles()}`}>
             {charCount}/280
@@ -55,9 +55,9 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
             variant="ghost"
             size="sm"
             onClick={handlePostOnX}
-            className="h-9 gap-2 text-xs font-bold hover:bg-blue-600 hover:text-white transition-all rounded-lg active:scale-95"
+            className="h-9 gap-2 text-xs font-bold hover:bg-slate-900 hover:text-white transition-all rounded-lg active:scale-95"
           >
-            <Twitter className="w-3.5 h-3.5" />
+            <X className="w-3.5 h-3.5" />
             <span className="hidden xs:inline">Post</span>
           </Button>
           <Button

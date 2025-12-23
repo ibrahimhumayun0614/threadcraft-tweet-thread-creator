@@ -3,7 +3,7 @@ import {
   Sparkles,
   Scissors,
   Upload,
-  Twitter,
+  X,
   Eraser,
   Copy,
   Info,
@@ -26,7 +26,7 @@ export function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    document.title = "Thread Craft | Professional Twitter Thread Creator";
+    document.title = "Thread Craft | Professional X Thread Creator";
   }, []);
   const wordCount = useMemo(() => {
     return inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
@@ -41,7 +41,7 @@ export function HomePage() {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
-      toast.success(`Thread Craft: Crafted ${chunks.length} tweets successfully!`);
+      toast.success(`Thread Craft: Crafted ${chunks.length} posts successfully!`);
       requestAnimationFrame(() => {
         if (resultsRef.current) {
           resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -75,7 +75,7 @@ export function HomePage() {
   };
   const formatThreadForClipboard = (items: string[]) => {
     const separator = "──────────────────────────";
-    return items.map((t, i) => `[Tweet ${i + 1}/${items.length}]\n${t}`).join(`\n\n${separator}\n\n`);
+    return items.map((t, i) => `[Post ${i + 1}/${items.length}]\n${t}`).join(`\n\n${separator}\n\n`);
   };
   const handleCopyAll = async () => {
     const allText = formatThreadForClipboard(tweets);
@@ -90,10 +90,10 @@ export function HomePage() {
     const success = await copyToClipboard(allText);
     if (success) {
       toast.success('Thread Craft: Story Ready!', {
-        description: 'First tweet opened. The complete thread is saved to your clipboard.',
+        description: 'First post opened. The complete thread is saved to your clipboard.',
       });
     }
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweets[0])}`;
+    const url = `https://x.com/intent/post?text=${encodeURIComponent(tweets[0])}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
   return (
@@ -106,7 +106,7 @@ export function HomePage() {
           className="flex justify-center"
         >
           <div className="w-16 h-16 rounded-3xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/20 text-white">
-            <Twitter className="w-9 h-9" />
+            <X className="w-9 h-9" />
           </div>
         </motion.div>
         <div className="space-y-4">
@@ -137,7 +137,7 @@ export function HomePage() {
                 <span className="font-mono">{inputText.length.toLocaleString()}</span> Chars
               </div>
             </div>
-            <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Engine 1.0</span>
+            <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Engine 1.1</span>
           </div>
         </div>
         <div className="sticky bottom-8 z-40">
@@ -187,7 +187,7 @@ export function HomePage() {
             <Info className="w-4 h-4 text-blue-600" />
           </div>
           <p className="leading-relaxed font-medium">
-            <strong>Engine Protocol:</strong> Thread Craft respects word integrity and protects formatting while automatically adding safe thread counters.
+            <strong>Engine Protocol:</strong> Thread Craft respects word integrity and protects formatting while automatically adding safe thread counters for X.
           </p>
         </motion.div>
       </main>
@@ -249,7 +249,7 @@ export function HomePage() {
       )}
       <footer className="py-12 text-center border-t border-border/50 mt-24">
         <p className="text-sm font-bold text-muted-foreground/50 tracking-wider">
-          © {new Date().getFullYear()} THREAD CRAFT — PROFESSIONAL STORYTELLING SUITE
+          © {new Date().getFullYear()} THREAD CRAFT — PROFESSIONAL STORYTELLING SUITE FOR X
         </p>
       </footer>
       <Toaster richColors position="bottom-right" closeButton />
