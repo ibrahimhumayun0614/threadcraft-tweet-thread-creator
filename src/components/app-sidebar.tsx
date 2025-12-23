@@ -1,4 +1,3 @@
-import React from "react";
 import { Home, Layers, Compass, Star, Twitter } from "lucide-react";
 import {
   Sidebar,

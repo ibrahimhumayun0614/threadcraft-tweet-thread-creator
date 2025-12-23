@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEvent, useMemo, useEffect } from 'react';
+import { useState, useRef, ChangeEvent, useMemo, useEffect } from 'react';
 import {
   Sparkles,
   Scissors,
