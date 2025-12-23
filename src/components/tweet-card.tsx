@@ -24,7 +24,7 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
   };
   const charCount = text.length;
   const getBadgeStyles = () => {
-    if (charCount > 270) return 'bg-destructive/10 text-destructive font-black border-destructive/20 ring-1 ring-destructive/10';
+    if (charCount > 270) return 'bg-destructive/10 text-destructive font-black border-destructive/20 ring-1 ring-destructive/10 shadow-sm';
     if (charCount > 250) return 'bg-orange-500/10 text-orange-600 font-black border-orange-500/20';
     return 'text-blue-600 bg-blue-50 border-blue-100 font-bold';
   };
@@ -55,10 +55,10 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
             variant="ghost"
             size="sm"
             onClick={handlePostOnX}
-            className="h-9 gap-2 text-xs font-bold hover:bg-slate-900 hover:text-white transition-all rounded-lg active:scale-95"
+            className="h-9 gap-2 text-xs font-bold hover:bg-slate-900 hover:text-white transition-all rounded-lg active:scale-95 group/btn"
           >
             <X className="w-3.5 h-3.5" />
-            <span className="hidden xs:inline">Post</span>
+            <span className="hidden xs:inline">Post on X</span>
           </Button>
           <Button
             variant="ghost"

@@ -13,6 +13,7 @@ export function splitText(text: string, limit: number = 280): string[] {
   const reservedSpace = 14;
   const effectiveLimit = safeLimit - reservedSpace;
   // Normalize line endings and segment text while preserving whitespace
+  // Using a regex that captures whitespace ensures we don't lose formatting
   const normalizedText = text.replace(/\r\n/g, "\n");
   const segments = normalizedText.split(/(\s+)/);
   const chunks: string[] = [];
@@ -40,7 +41,8 @@ export function splitText(text: string, limit: number = 280): string[] {
       if (currentChunk.trim()) {
         chunks.push(currentChunk.trim());
       }
-      // Trim leading spaces only if they are not intentional structural newlines
+      // If the current segment is just whitespace (like multiple newlines), 
+      // we only carry it over if it contains structural information (newlines)
       currentChunk = segment.trim() ? segment : (segment.includes('\n') ? segment : "");
     }
   }

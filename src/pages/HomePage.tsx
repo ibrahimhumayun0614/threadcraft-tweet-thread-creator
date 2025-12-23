@@ -25,6 +25,7 @@ export function HomePage() {
   const [isSplitting, setIsSplitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const scrollAnchorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     document.title = "Thread Craft | Professional X Thread Creator";
   }, []);
@@ -37,16 +38,18 @@ export function HomePage() {
       return;
     }
     setIsSplitting(true);
+    // Artificial delay for UX feel
     setTimeout(() => {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
       toast.success(`Thread Craft: Crafted ${chunks.length} posts successfully!`);
-      requestAnimationFrame(() => {
-        if (resultsRef.current) {
-          resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Improved scrolling logic with a slight delay to allow DOM to render
+      setTimeout(() => {
+        if (scrollAnchorRef.current) {
+          scrollAnchorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      });
+      }, 100);
     }, 450);
   };
   const handleClear = () => {
@@ -89,8 +92,8 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Thread Craft: Story Ready!', {
-        description: 'First post opened. The complete thread is saved to your clipboard.',
+      toast.success('Story Ready!', {
+        description: 'First post opened in X. The complete thread structure is saved to your clipboard for easy pasting.',
       });
     }
     const url = `https://x.com/intent/post?text=${encodeURIComponent(tweets[0])}`;
@@ -137,7 +140,7 @@ export function HomePage() {
                 <span className="font-mono">{inputText.length.toLocaleString()}</span> Chars
               </div>
             </div>
-            <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Engine 1.1</span>
+            <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Engine 1.2</span>
           </div>
         </div>
         <div className="sticky bottom-8 z-40">
@@ -190,6 +193,8 @@ export function HomePage() {
             <strong>Engine Protocol:</strong> Thread Craft respects word integrity and protects formatting while automatically adding safe thread counters for X.
           </p>
         </motion.div>
+        {/* Dedicated scroll anchor for better mobile results positioning */}
+        <div ref={scrollAnchorRef} className="h-1 -mt-10" />
       </main>
       <AnimatePresence>
         {tweets.length > 0 && (
@@ -198,7 +203,7 @@ export function HomePage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
-            className="mt-32 space-y-16"
+            className="mt-24 md:mt-32 space-y-16"
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between border-b pb-8 gap-6">
               <div className="space-y-2">

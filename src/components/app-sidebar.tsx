@@ -64,7 +64,7 @@ export function AppSidebar(): JSX.Element {
       </SidebarContent>
       <SidebarFooter>
         <div className="px-2 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-          Thread Craft Professional v1.1
+          Thread Craft Professional v1.2
         </div>
       </SidebarFooter>
     </Sidebar>
