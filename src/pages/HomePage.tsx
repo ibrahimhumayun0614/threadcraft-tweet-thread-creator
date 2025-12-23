@@ -9,7 +9,8 @@ import {
   Rocket,
   ChevronUp,
   FileText,
-  X as CloseIcon
+  X as CloseIcon,
+  CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, Toaster } from 'sonner';
@@ -19,12 +20,12 @@ import { TweetCard } from '@/components/tweet-card';
 import { splitText } from '@/lib/splitter';
 import { copyToClipboard } from '@/lib/utils';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { cn } from '@/lib/utils';
 export function HomePage() {
   const [inputText, setInputText] = useState('');
   const [tweets, setTweets] = useState<string[]>([]);
   const [isSplitting, setIsSplitting] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(() => {
-    // Persistent state for onboarding visibility
     const hidden = localStorage.getItem('threadcraft_onboarding_hidden');
     return !hidden;
   });
@@ -38,27 +39,29 @@ export function HomePage() {
   }, [inputText]);
   const handleSplit = () => {
     if (!inputText.trim()) {
-      toast.error('Thread Craft: Please enter some text first');
+      toast.error('Thread Craft: Please enter some content first.');
       return;
     }
     setIsSplitting(true);
-    // Artificial delay for UX feel
     setTimeout(() => {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
-      toast.success(`Thread Craft: Crafted ${chunks.length} posts successfully!`);
-      setTimeout(() => {
-        if (scrollAnchorRef.current) {
-          scrollAnchorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+      if (chunks.length > 0) {
+        toast.success(`Crafted ${chunks.length} posts successfully!`, {
+          icon: <CheckCircle2 className="w-4 h-4 text-green-500" />
+        });
+        // Slightly delayed scroll to allow layout to settle
+        setTimeout(() => {
+          scrollAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      }
     }, 450);
   };
   const handleClear = () => {
     setInputText('');
     setTweets([]);
-    toast.info('Thread Craft: Editor cleared');
+    toast.info('Editor cleared.');
   };
   const handleDismissOnboarding = () => {
     setShowOnboarding(false);
@@ -67,8 +70,8 @@ export function HomePage() {
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.name.endsWith('.txt')) {
-      toast.error('Thread Craft: Only .txt files are supported');
+    if (!file.name.toLowerCase().endsWith('.txt')) {
+      toast.error('Invalid format: Only .txt files are supported.');
       return;
     }
     const reader = new FileReader();
@@ -76,10 +79,10 @@ export function HomePage() {
       const content = event.target?.result;
       if (typeof content === 'string') {
         setInputText(content);
-        toast.success('Thread Craft: File imported successfully');
+        toast.success('Document imported successfully.');
       }
     };
-    reader.onerror = () => toast.error('Thread Craft: Failed to read file');
+    reader.onerror = () => toast.error('Error: Failed to read file.');
     reader.readAsText(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -91,7 +94,7 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Thread Craft: Full thread copied to clipboard');
+      toast.success('Full thread structure copied to clipboard.');
     }
   };
   const handleStartFullThread = async () => {
@@ -99,113 +102,127 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Thread Craft: Ready to Post!', {
-        description: 'The complete thread structure is saved to your clipboard for easy pasting. We have opened the first post in X for you.',
+      toast.success('Thread Ready!', {
+        description: 'The structure is in your clipboard. Opening the first post for you.',
       });
     }
     const url = `https://x.com/intent/post?text=${encodeURIComponent(tweets[0])}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
   return (
-    <AppLayout container className="min-h-screen bg-background bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px]">
-      <header className="text-center space-y-2 mb-12">
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl font-display font-black tracking-tight text-foreground">
-            Thread Craft
+    <AppLayout container className="min-h-screen bg-slate-50/30 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:32px_32px]">
+      <header className="text-center space-y-4 mb-16 pt-4">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-5xl md:text-7xl font-display font-black tracking-tighter text-slate-900">
+            Thread<span className="text-blue-600">Craft</span>
           </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed font-medium">
-            Professional tools for long-form storytellers on X.
+          <p className="text-slate-500 max-w-xl mx-auto text-lg md:text-xl leading-relaxed font-medium mt-4">
+            Transform long stories into perfectly sequenced X threads with zero friction.
           </p>
-        </div>
+        </motion.div>
       </header>
-      <main className="max-w-3xl mx-auto space-y-10 relative">
+      <main className="max-w-3xl mx-auto space-y-12 relative pb-20">
         <AnimatePresence mode="wait">
           {showOnboarding && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="bg-white rounded-2xl p-6 border border-border shadow-sm mb-8 max-w-2xl mx-auto relative group"
+              initial={{ opacity: 0, scale: 0.98, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: -10 }}
+              className="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl shadow-slate-200/50 mb-10 max-w-2xl mx-auto relative overflow-hidden"
             >
-              <button 
-                onClick={handleDismissOnboarding}
-                className="absolute top-4 right-4 p-1 rounded-full hover:bg-slate-100 text-muted-foreground transition-colors"
-                aria-label="Dismiss onboarding"
-              >
-                <CloseIcon className="w-4 h-4" />
-              </button>
-              <h3 className="text-xl font-bold mb-3 text-foreground flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-blue-500" />
-                How Thread Craft Works
+              <div className="absolute top-0 right-0 p-4">
+                <button
+                  onClick={handleDismissOnboarding}
+                  className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all active:scale-90"
+                  aria-label="Dismiss onboarding"
+                >
+                  <CloseIcon className="w-5 h-5" />
+                </button>
+              </div>
+              <h3 className="text-2xl font-black mb-4 text-slate-900 flex items-center gap-3">
+                <Sparkles className="w-6 h-6 text-blue-500 fill-blue-500/10" />
+                The Protocol
               </h3>
-              <ol className="text-sm space-y-2 text-muted-foreground/90 ml-4 list-decimal marker:font-bold marker:text-blue-500/50">
-                <li className="pl-2">Paste your text or upload a <code className="bg-slate-100 px-1 rounded">.txt</code> file to the editor below.</li>
-                <li className="pl-2">Click <strong>"Craft Thread"</strong> to automatically split your content into perfectly sized 280-character posts.</li>
-                <li className="pl-2">Copy individual posts or use <strong>"Start Thread"</strong> to begin posting on X. Pro Tip: Post #1 first, then reply with #2, and so on.</li>
+              <ol className="space-y-4 text-slate-600 font-medium list-none">
+                <li className="flex gap-4 items-start">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">1</span>
+                  <span>Input or <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">Upload</code> your content to the engine.</span>
+                </li>
+                <li className="flex gap-4 items-start">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">2</span>
+                  <span>Hit <strong className="text-slate-900">"Craft Thread"</strong> to generate optimized 280-char segments.</span>
+                </li>
+                <li className="flex gap-4 items-start">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">3</span>
+                  <span>Copy segments sequentially or use <strong className="text-blue-600">"Start Thread"</strong> for an automated workflow.</span>
+                </li>
               </ol>
-              <p className="text-xs mt-5 font-bold text-blue-600 uppercase tracking-tight flex items-center gap-2">
-                <Rocket className="w-3.5 h-3.5" />
-                Preserves words/formatting. Ready? ✨
-              </p>
             </motion.div>
           )}
         </AnimatePresence>
-        <div className="relative group rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-border/50 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all duration-300">
+        <div className="relative group rounded-[2rem] overflow-hidden bg-white shadow-2xl ring-1 ring-slate-200/60 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-500">
           <Textarea
-            placeholder="Paste your essay, article, or thoughts here..."
-            className="min-h-[400px] text-lg p-8 resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+            placeholder="Paste your story here..."
+            className="min-h-[450px] text-xl p-10 resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-slate-300 font-medium leading-relaxed"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
           />
-          <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-border/50">
-            <div className="flex gap-4">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                <FileText className="w-3.5 h-3.5" />
-                <span className="font-mono">{wordCount.toLocaleString()}</span> Words
+          <div className="flex items-center justify-between px-8 py-5 bg-slate-50/50 border-t border-slate-100 backdrop-blur-sm">
+            <div className="flex gap-6">
+              <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.15em]">
+                <FileText className="w-4 h-4 text-slate-300" />
+                <span>{wordCount.toLocaleString()}</span> Words
               </div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span className="font-mono">{inputText.length.toLocaleString()}</span> Chars
+              <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.15em]">
+                <Sparkles className="w-4 h-4 text-slate-300" />
+                <span>{inputText.length.toLocaleString()}</span> Chars
               </div>
             </div>
-            <span className="text-[10px] font-bold text-blue-600/60 uppercase tracking-widest">Thread Craft Engine 1.3</span>
+            <div className="px-3 py-1 rounded-full bg-blue-50/50 border border-blue-100/50">
+              <span className="text-[10px] font-black text-blue-600/60 uppercase tracking-widest">v1.4 Engine Protocol</span>
+            </div>
           </div>
         </div>
-        <div className="sticky bottom-8 z-40">
-          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white/95 backdrop-blur-xl p-3 rounded-2xl border border-border shadow-2xl ring-1 ring-black/5">
+        <div className="sticky bottom-10 z-40 px-4 sm:px-0">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/80 backdrop-blur-2xl p-4 rounded-[1.5rem] border border-white shadow-2xl ring-1 ring-slate-200/50">
             <div className="flex gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
-                size="sm"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex-1 sm:flex-none gap-2 rounded-xl h-12 bg-white border-border hover:bg-slate-50 transition-colors"
+                className="flex-1 sm:flex-none h-14 px-6 rounded-2xl bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 gap-2 font-bold text-slate-700"
               >
                 <Upload className="w-4 h-4" />
-                <span className="hidden xs:inline">Upload</span>
+                <span>Import</span>
               </Button>
               <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".txt" className="hidden" />
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={handleClear}
-                className="flex-1 sm:flex-none gap-2 h-12 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+                className="flex-1 sm:flex-none h-14 px-6 rounded-2xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all active:scale-95 gap-2 font-bold"
               >
                 <Eraser className="w-4 h-4" />
-                <span className="hidden xs:inline">Clear</span>
+                <span>Clear</span>
               </Button>
             </div>
             <Button
               size="lg"
               onClick={handleSplit}
               disabled={isSplitting || !inputText.trim()}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white h-12 px-10 rounded-xl gap-3 shadow-lg shadow-blue-500/20 active:scale-95 transition-all font-bold"
+              className={cn(
+                "w-full sm:w-auto h-14 px-12 rounded-2xl gap-3 font-black text-base shadow-xl transition-all active:scale-95",
+                "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/25"
+              )}
             >
               {isSplitting ? (
-                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="h-5 w-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <Scissors className="w-4 h-4" />
+                <Scissors className="w-5 h-5" />
               )}
-              {isSplitting ? 'Crafting...' : 'Craft Thread'}
+              {isSplitting ? 'Processing...' : 'Craft Thread'}
             </Button>
           </div>
         </div>
@@ -213,63 +230,71 @@ export function HomePage() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl flex gap-4 text-sm text-blue-900/80"
+          className="bg-blue-600/5 border border-blue-100 p-6 rounded-[2rem] flex gap-5 text-sm text-blue-900/80 shadow-sm"
         >
-          <div className="bg-blue-100 p-2 rounded-xl h-fit shrink-0">
-            <Info className="w-4 h-4 text-blue-600" />
+          <div className="bg-blue-600 p-3 rounded-2xl h-fit shrink-0 shadow-lg shadow-blue-500/20">
+            <Info className="w-5 h-5 text-white" />
           </div>
-          <p className="leading-relaxed font-medium">
-            <strong>Engine Protocol:</strong> Thread Craft respects word integrity and protects formatting while automatically adding safe thread counters for X.
-          </p>
+          <div className="space-y-1">
+            <p className="font-black uppercase tracking-widest text-[10px] text-blue-600/70">Engine Protocol</p>
+            <p className="leading-relaxed font-semibold text-slate-700">
+              Thread Craft respects word integrity and protects formatting while automatically adding safe thread counters for X.
+            </p>
+          </div>
         </motion.div>
-        <div ref={scrollAnchorRef} className="h-1 -mt-10" />
+        <div ref={scrollAnchorRef} className="h-4 -mt-20 invisible" />
       </main>
       <AnimatePresence>
         {tweets.length > 0 && (
           <motion.section
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            className="mt-24 md:mt-32 space-y-16"
+            exit={{ opacity: 0, y: 50 }}
+            className="mt-32 space-y-20"
           >
-            <div className="flex flex-col md:flex-row md:items-center justify-between border-b pb-8 gap-6">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-black tracking-tight text-foreground">Thread Preview</h2>
-                <p className="text-muted-foreground font-medium">Split into {tweets.length} parts for maximum engagement.</p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-12 gap-8">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-widest border border-green-100">
+                  <CheckCircle2 className="w-3 h-3" /> Processing Complete
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900">Thread Preview</h2>
+                <p className="text-slate-500 text-lg font-medium">Your story is split into {tweets.length} high-impact posts.</p>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <Button variant="outline" className="gap-2 h-12 px-6 rounded-xl bg-white" onClick={handleCopyAll}>
-                  <Copy className="w-4 h-4" /> Copy All
+              <div className="flex flex-wrap gap-4">
+                <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white border-slate-200 font-bold text-slate-700 hover:bg-slate-50 gap-2" onClick={handleCopyAll}>
+                  <Copy className="w-5 h-5" /> Copy Full Thread
                 </Button>
-                <Button variant="default" className="gap-2 bg-blue-600 hover:bg-blue-700 h-12 px-8 rounded-xl font-bold shadow-xl shadow-blue-500/25" onClick={handleStartFullThread}>
-                  <Rocket className="w-5 h-5" /> Start Thread
+                <Button variant="default" className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black shadow-2xl shadow-slate-900/20 gap-3 active:scale-95" onClick={handleStartFullThread}>
+                  <Rocket className="w-5 h-5" /> Start Posting
                 </Button>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {tweets.map((tweet, index) => (
                 <TweetCard key={`${index}-${tweet.length}`} text={tweet} index={index} total={tweets.length} />
               ))}
             </div>
-            {/* Posting Guidance Instruction Note */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="pt-12 pb-8 px-6 text-center bg-slate-50/50 rounded-2xl border border-slate-200/60 max-w-2xl mx-auto"
+              transition={{ delay: 0.6 }}
+              className="py-12 px-8 text-center bg-slate-100/50 rounded-[2.5rem] border border-slate-200/60 max-w-3xl mx-auto"
             >
-              <div className="flex items-center justify-center gap-3 text-muted-foreground/90 text-sm font-medium">
-                <div className="bg-white p-1.5 rounded-lg shadow-sm border">
-                  <Info className="w-4 h-4 shrink-0 text-blue-600" />
+              <div className="flex flex-col items-center gap-4">
+                <div className="bg-white p-3 rounded-2xl shadow-lg border border-slate-100">
+                  <Info className="w-6 h-6 text-blue-600" />
                 </div>
-                <p className="leading-relaxed">
-                  <strong className="text-foreground">Pro Tip:</strong> To post a thread on X, publish Post #1 first, then reply to it with Post #2, and so on. Use the 'Start Thread' button to get the first post ready instantly!
-                </p>
+                <div className="space-y-2">
+                  <h4 className="text-xl font-black text-slate-900">Pro Guidance</h4>
+                  <p className="text-slate-600 font-medium leading-relaxed max-w-xl mx-auto">
+                    To publish a thread on X, post your first segment, then reply to it with the second, and so on. We've copied the full structure to your clipboard for reference.
+                  </p>
+                </div>
               </div>
             </motion.div>
-            <div className="flex justify-center pt-8">
-              <Button variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group gap-2 text-muted-foreground hover:text-primary h-12 px-8 rounded-2xl font-semibold">
-                <ChevronUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform" /> Back to Top
+            <div className="flex justify-center pt-10">
+              <Button variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group gap-3 text-slate-400 hover:text-slate-900 h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs">
+                <ChevronUp className="w-5 h-5 group-hover:-translate-y-2 transition-transform duration-300" /> Scroll to Top
               </Button>
             </div>
           </motion.section>
@@ -277,27 +302,28 @@ export function HomePage() {
       </AnimatePresence>
       {!tweets.length && !isSplitting && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mt-24 text-center py-32 border-2 border-dashed border-border/60 rounded-[3rem] bg-white/30 backdrop-blur-sm"
+          className="mt-32 text-center py-40 border-2 border-dashed border-slate-200 rounded-[4rem] bg-white/50 backdrop-blur-sm relative overflow-hidden group"
         >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.03)_0%,transparent_70%)]" />
           <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="relative inline-block mb-8"
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="relative inline-block mb-10"
           >
-             <div className="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full" />
-             <Sparkles className="relative w-16 h-16 md:w-20 md:h-20 mx-auto text-blue-500/30" />
+             <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full" />
+             <Sparkles className="relative w-20 h-20 md:w-28 md:h-28 mx-auto text-blue-500/20 group-hover:text-blue-500/40 transition-colors duration-500" />
           </motion.div>
-          <h3 className="text-2xl font-black text-foreground mb-3">Ready for your story</h3>
-          <p className="text-muted-foreground/80 max-w-sm mx-auto font-medium px-4">
-            Your perfectly formatted Thread Craft cards will appear here after crafting.
+          <h3 className="text-3xl font-black text-slate-900 mb-4 relative z-10">Waiting for your story</h3>
+          <p className="text-slate-500 max-w-sm mx-auto font-semibold px-6 text-lg relative z-10">
+            Paste your thoughts above to generate your professional thread preview.
           </p>
         </motion.div>
       )}
-      <footer className="py-12 text-center border-t border-border/50 mt-24">
-        <p className="text-sm font-bold text-muted-foreground/50 tracking-wider">
-          © {new Date().getFullYear()} THREAD CRAFT — PROFESSIONAL STORYTELLING SUITE FOR X
+      <footer className="py-20 text-center border-t border-slate-200/60 mt-40">
+        <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.3em]">
+          © {new Date().getFullYear()} THREAD CRAFT — PROFESSIONAL STORYTELLING SUITE
         </p>
       </footer>
       <Toaster richColors position="bottom-right" closeButton />
