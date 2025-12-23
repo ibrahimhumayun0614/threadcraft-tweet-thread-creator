@@ -1,12 +1,12 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
-import { 
-  Sparkles, 
-  Trash2, 
-  Scissors, 
-  Upload, 
-  Twitter, 
+import {
+  Sparkles,
+  Scissors,
+  Upload,
+  Twitter,
   Eraser,
-  Copy
+  Copy,
+  Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, Toaster } from 'sonner';
@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { TweetCard } from '@/components/tweet-card';
 import { splitText } from '@/lib/splitter';
+import { copyToClipboard } from '@/lib/utils';
 export function HomePage() {
   const [inputText, setInputText] = useState('');
   const [tweets, setTweets] = useState<string[]>([]);
@@ -27,13 +28,11 @@ export function HomePage() {
       return;
     }
     setIsSplitting(true);
-    // Add a slight delay for better visual feedback
     setTimeout(() => {
       const chunks = splitText(inputText);
       setTweets(chunks);
       setIsSplitting(false);
       toast.success(`Split into ${chunks.length} tweets!`);
-      // Smooth scroll to results
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -60,25 +59,25 @@ export function HomePage() {
       }
     };
     reader.readAsText(file);
-    // Reset file input value so same file can be uploaded again
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
-  const handleCopyTweet = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success('Copied to clipboard');
-  };
-  const handleCopyAll = () => {
+  const handleCopyAll = async () => {
     const allText = tweets.join('\n\n---\n\n');
-    navigator.clipboard.writeText(allText);
-    toast.success('Copied entire thread');
+    const success = await copyToClipboard(allText);
+    if (success) toast.success('Copied entire thread');
+  };
+  const handleStartThread = () => {
+    if (tweets.length === 0) return;
+    const firstTweet = tweets[0];
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(firstTweet)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8 md:py-10 lg:py-12">
         <ThemeToggle />
-        {/* Hero Section */}
         <header className="text-center space-y-4 mb-12">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className="flex justify-center"
@@ -96,7 +95,6 @@ export function HomePage() {
             </p>
           </div>
         </header>
-        {/* Input Section */}
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="relative group">
             <Textarea
@@ -151,8 +149,11 @@ export function HomePage() {
               Split into Tweets
             </Button>
           </div>
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-4 rounded-xl flex gap-3 text-sm text-blue-700 dark:text-blue-300">
+            <Info className="w-5 h-5 flex-shrink-0" />
+            <p><strong>Tip:</strong> Post the first tweet on X, then reply to it with the subsequent tweets to create your thread.</p>
+          </div>
         </div>
-        {/* Results Section */}
         <AnimatePresence>
           {tweets.length > 0 && (
             <motion.section
@@ -162,7 +163,7 @@ export function HomePage() {
               exit={{ opacity: 0, y: 40 }}
               className="mt-20 space-y-8"
             >
-              <div className="flex items-center justify-between border-b pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 gap-4">
                 <div>
                   <h2 className="text-2xl font-bold flex items-center gap-2">
                     Generated Thread
@@ -171,15 +172,27 @@ export function HomePage() {
                     </span>
                   </h2>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="gap-2"
-                  onClick={handleCopyAll}
-                >
-                  <Copy className="w-4 h-4" />
-                  Copy Entire Thread
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={handleCopyAll}
+                  >
+                    <Copy className="w-4 h-4" />
+                    <span className="hidden sm:inline">Copy Entire Thread</span>
+                    <span className="sm:hidden">Copy All</span>
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="gap-2 bg-blue-600 hover:bg-blue-700"
+                    onClick={handleStartThread}
+                  >
+                    <Twitter className="w-4 h-4" />
+                    <span>Start Thread</span>
+                  </Button>
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tweets.map((tweet, index) => (
@@ -188,7 +201,6 @@ export function HomePage() {
                     text={tweet}
                     index={index}
                     total={tweets.length}
-                    onCopy={handleCopyTweet}
                   />
                 ))}
               </div>
@@ -204,7 +216,6 @@ export function HomePage() {
             </motion.section>
           )}
         </AnimatePresence>
-        {/* Empty State */}
         {tweets.length === 0 && !isSplitting && (
           <div className="mt-20 text-center py-20 border-2 border-dashed rounded-3xl opacity-40">
             <Sparkles className="w-10 h-10 mx-auto mb-4 text-muted-foreground" />
