@@ -92,7 +92,7 @@ export function HomePage() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
   const formatThreadForClipboard = (items: string[]) => {
-    const separator = "──────────────────────────";
+    const separator = "���─────────────────────────";
     return items.map((t, i) => `[Post ${i + 1}/${items.length}]\n${t}`).join(`\n\n${separator}\n\n`);
   };
   const handleCopyAll = async () => {
@@ -338,8 +338,8 @@ export function HomePage() {
           </main>
           {/* Footer */}
           <footer className="py-20 text-center border-t border-slate-200/60 mt-40">
-            <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.3em]">
-              © {new Date().getFullYear()} THREAD CRAFT — PROFESSIONAL STORYTELLING SUITE
+            <p className="text-sm font-medium text-slate-400 tracking-wide">
+              © {new Date().getFullYear()} Thread Craft — Made with ❤️ by Mohamed
             </p>
           </footer>
         </div>
