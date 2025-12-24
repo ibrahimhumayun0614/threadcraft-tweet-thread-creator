@@ -31,7 +31,7 @@ export function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    document.title = "Thread Craft";
+    document.title = "Thread Craft | X Thread Creator";
   }, []);
   const wordCount = useMemo(() => {
     return inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
@@ -92,7 +92,7 @@ export function HomePage() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
   const formatThreadForClipboard = (items: string[]) => {
-    const separator = "���─────────────────────────";
+    const separator = "──────────────────────────";
     return items.map((t, i) => `[Post ${i + 1}/${items.length}]\n${t}`).join(`\n\n${separator}\n\n`);
   };
   const handleCopyAll = async () => {
@@ -108,7 +108,7 @@ export function HomePage() {
     const success = await copyToClipboard(allText);
     if (success) {
       toast.success('Thread Craft: Thread Ready!', {
-        description: 'The structure is in your clipboard. Opening the first post for you.',
+        description: 'Structure copied. Opening the first post for you.',
       });
     }
     const url = `https://x.com/intent/post?text=${encodeURIComponent(tweets[0])}`;
@@ -237,23 +237,6 @@ export function HomePage() {
                 </Button>
               </div>
             </div>
-            {/* Engine Info */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="bg-blue-600/5 border border-blue-100 p-6 rounded-[2rem] flex gap-5 text-sm text-blue-900/80 shadow-sm"
-            >
-              <div className="bg-blue-600 p-3 rounded-2xl h-fit shrink-0 shadow-lg shadow-blue-500/20">
-                <Info className="w-5 h-5 text-white" />
-              </div>
-              <div className="space-y-1">
-                <p className="font-black uppercase tracking-widest text-[10px] text-blue-600/70">Engine Protocol</p>
-                <p className="leading-relaxed font-semibold text-slate-700">
-                  Thread Craft respects word integrity and protects formatting while automatically adding safe thread counters for X.
-                </p>
-              </div>
-            </motion.div>
             <div ref={scrollAnchorRef} className="h-4 -mt-20 invisible" />
             {/* Results Section */}
             <AnimatePresence>
@@ -338,9 +321,14 @@ export function HomePage() {
           </main>
           {/* Footer */}
           <footer className="py-20 text-center border-t border-slate-200/60 mt-40">
-            <p className="text-sm font-medium text-slate-400 tracking-wide">
-              © {new Date().getFullYear()} Thread Craft — Made with ❤️ by Mohamed
-            </p>
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center gap-2 text-slate-900 font-black tracking-tight text-lg">
+                Thread <span className="text-blue-600">Craft</span>
+              </div>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">
+                © {new Date().getFullYear()} Thread Craft — Made with ❤️ by Mohamed
+              </p>
+            </div>
           </footer>
         </div>
       </div>

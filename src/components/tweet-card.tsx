@@ -61,7 +61,7 @@ export function TweetCard({ text, index, total }: TweetCardProps) {
             className="h-9 gap-2 text-xs font-bold hover:bg-slate-900 hover:text-white transition-all rounded-lg active:scale-95 group/btn"
           >
             <X className="w-3.5 h-3.5" />
-            <span className="hidden xs:inline">Post on X</span>
+            <span className="hidden sm:inline">Post on X</span>
           </Button>
           <Button
             variant="ghost"
