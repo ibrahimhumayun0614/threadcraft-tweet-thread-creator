@@ -1,4 +1,4 @@
-import { useState, useRef, ChangeEvent, useMemo, useEffect } from 'react';
+import React, { useState, useRef, ChangeEvent, useMemo, useEffect } from 'react';
 import {
   Sparkles,
   Scissors,
@@ -42,17 +42,24 @@ export function HomePage() {
       return;
     }
     setIsSplitting(true);
+    // Synthetic delay for professional feel
     setTimeout(() => {
-      const chunks = splitText(inputText);
-      setTweets(chunks);
-      setIsSplitting(false);
-      if (chunks.length > 0) {
-        toast.success(`Thread Craft: Crafted ${chunks.length} posts successfully!`, {
-          icon: <CheckCircle2 className="w-4 h-4 text-green-500" />
-        });
-        setTimeout(() => {
-          scrollAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 150);
+      try {
+        const chunks = splitText(inputText);
+        setTweets(chunks);
+        setIsSplitting(false);
+        if (chunks.length > 0) {
+          toast.success(`Thread Craft: Crafted ${chunks.length} posts successfully!`, {
+            icon: <CheckCircle2 className="w-4 h-4 text-green-500" />
+          });
+          setTimeout(() => {
+            scrollAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 150);
+        }
+      } catch (error) {
+        console.error('Split logic failure:', error);
+        toast.error('Thread Craft: An error occurred while processing your text.');
+        setIsSplitting(false);
       }
     }, 450);
   };
@@ -111,6 +118,7 @@ export function HomePage() {
     <div className="min-h-screen bg-slate-50/30 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:32px_32px]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8 md:py-10 lg:py-12">
+          {/* Header Section */}
           <header className="text-center space-y-4 mb-16 pt-4">
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -126,6 +134,7 @@ export function HomePage() {
             </motion.div>
           </header>
           <main className="max-w-3xl mx-auto space-y-12 relative pb-20">
+            {/* Onboarding / Tips Section */}
             <AnimatePresence mode="wait">
               {showOnboarding && (
                 <motion.div
@@ -150,7 +159,7 @@ export function HomePage() {
                   <ol className="space-y-4 text-slate-600 font-medium list-none">
                     <li className="flex gap-4 items-start">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">1</span>
-                      <span>Input or <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">Upload</code> your content to the engine.</span>
+                      <span>Input or <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">Import</code> your content to the engine.</span>
                     </li>
                     <li className="flex gap-4 items-start">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">2</span>
@@ -158,12 +167,13 @@ export function HomePage() {
                     </li>
                     <li className="flex gap-4 items-start">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">3</span>
-                      <span>Copy segments sequentially or use <strong className="text-blue-600">"Start Thread"</strong> for an automated workflow.</span>
+                      <span>Copy segments sequentially or use <strong className="text-blue-600">"Start Posting"</strong> for an automated workflow.</span>
                     </li>
                   </ol>
                 </motion.div>
               )}
             </AnimatePresence>
+            {/* Input Section */}
             <div className="relative group rounded-[2rem] overflow-hidden bg-white shadow-2xl ring-1 ring-slate-200/60 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-500">
               <Textarea
                 placeholder="Paste your story here..."
@@ -187,6 +197,7 @@ export function HomePage() {
                 </div>
               </div>
             </div>
+            {/* Sticky Action Controls */}
             <div className="sticky bottom-10 z-40 px-4 sm:px-0">
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/80 backdrop-blur-2xl p-4 rounded-[1.5rem] border border-white shadow-2xl ring-1 ring-slate-200/50">
                 <div className="flex gap-2 w-full sm:w-auto">
@@ -218,7 +229,7 @@ export function HomePage() {
                   )}
                 >
                   {isSplitting ? (
-                    <div className="h-5 w-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <Scissors className="w-5 h-5" />
                   )}
@@ -226,6 +237,7 @@ export function HomePage() {
                 </Button>
               </div>
             </div>
+            {/* Engine Info */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -243,6 +255,7 @@ export function HomePage() {
               </div>
             </motion.div>
             <div ref={scrollAnchorRef} className="h-4 -mt-20 invisible" />
+            {/* Results Section */}
             <AnimatePresence>
               {tweets.length > 0 && (
                 <motion.section
@@ -273,6 +286,7 @@ export function HomePage() {
                       <TweetCard key={`${index}-${tweet.length}`} text={tweet} index={index} total={tweets.length} />
                     ))}
                   </div>
+                  {/* Pro Guidance Footer */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -299,6 +313,7 @@ export function HomePage() {
                 </motion.section>
               )}
             </AnimatePresence>
+            {/* Empty State */}
             {!tweets.length && !isSplitting && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -321,6 +336,7 @@ export function HomePage() {
               </motion.div>
             )}
           </main>
+          {/* Footer */}
           <footer className="py-20 text-center border-t border-slate-200/60 mt-40">
             <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.3em]">
               © {new Date().getFullYear()} THREAD CRAFT — PROFESSIONAL STORYTELLING SUITE
