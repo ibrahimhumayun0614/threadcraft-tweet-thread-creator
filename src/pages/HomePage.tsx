@@ -326,7 +326,15 @@ export function HomePage() {
                 Thread <span className="text-blue-600">Craft</span>
               </div>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">
-                © {new Date().getFullYear()} Thread Craft — Made with ❤️ by Mohamed
+                © {new Date().getFullYear()} Thread Craft — Made with ❤️ by{' '}
+                <a
+                  href="https://wa.me/916380986703"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-700 underline transition-colors"
+                >
+                  Mohamed
+                </a>
               </p>
             </div>
           </footer>
