@@ -1,5 +1,5 @@
 /**
- * Thread Craft Splitter Engine v1.4
+ * Thread Craft Splitter Engine v1.5
  *
  * Professional tool for crafting long strings into perfectly formatted
  * X (Twitter) threads. Respects word/line boundaries, preserves formatting,
@@ -11,13 +11,13 @@ export function splitText(text: string | null | undefined, limit: number = 280):
     return [];
   }
   // Buffer for " (999/999)" suffix safety.
-  // We reserve 14 characters for the suffix to be extremely safe (e.g., " 100/100").
+  // We reserve 14 characters for the suffix (e.g., " 100/100").
   const safeLimit = Math.max(limit, 30);
   const reservedSpace = 14;
   const effectiveLimit = safeLimit - reservedSpace;
   // Normalize line endings and segment text while preserving whitespace
   const normalizedText = text.replace(/\r\n/g, "\n");
-  // Split by any whitespace but capture the separators to maintain structure
+  // Split by whitespace but capture separators to maintain structure
   const segments = normalizedText.split(/(\s+)/);
   const chunks: string[] = [];
   let currentChunk = "";
@@ -56,13 +56,12 @@ export function splitText(text: string | null | undefined, limit: number = 280):
   }
   const total = chunks.length;
   if (total === 0) return [];
-  // Logic Audit: If only one post, do not add "1/1" suffix as it is redundant for single posts.
+  // If only one post, do not add "1/1" suffix as it is redundant for single posts.
   if (total === 1) {
     return [chunks[0]];
   }
   return chunks.map((chunk, index) => {
     const suffix = ` ${index + 1}/${total}`;
-    // Final check: Ensure the chunk itself is trimmed before appending the suffix
     return chunk.trim() + suffix;
   });
 }

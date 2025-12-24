@@ -193,7 +193,7 @@ export function HomePage() {
                   </div>
                 </div>
                 <div className="px-3 py-1 rounded-full bg-blue-50/50 border border-blue-100/50">
-                  <span className="text-[10px] font-black text-blue-600/60 uppercase tracking-widest">v1.4 Engine Protocol</span>
+                  <span className="text-[10px] font-black text-blue-600/60 uppercase tracking-widest">v1.5 Engine Protocol</span>
                 </div>
               </div>
             </div>
