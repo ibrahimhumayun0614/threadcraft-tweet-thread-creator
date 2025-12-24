@@ -24,7 +24,7 @@ export function AppSidebar(): JSX.Element {
           </div>
           <span className="text-sm font-bold tracking-tight">Thread Craft</span>
         </div>
-        <SidebarInput placeholder="Search your stories..." />
+        <SidebarInput placeholder="Search Thread Craft..." />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -64,7 +64,7 @@ export function AppSidebar(): JSX.Element {
       </SidebarContent>
       <SidebarFooter>
         <div className="px-2 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-          Thread Craft Professional v1.3
+          Thread Craft Professional v1.4
         </div>
       </SidebarFooter>
     </Sidebar>

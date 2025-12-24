@@ -32,7 +32,7 @@ export function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    document.title = "Thread Craft | Professional X Thread Creator";
+    document.title = "Thread Craft";
   }, []);
   const wordCount = useMemo(() => {
     return inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
@@ -48,10 +48,9 @@ export function HomePage() {
       setTweets(chunks);
       setIsSplitting(false);
       if (chunks.length > 0) {
-        toast.success(`Crafted ${chunks.length} posts successfully!`, {
+        toast.success(`Thread Craft: Crafted ${chunks.length} posts successfully!`, {
           icon: <CheckCircle2 className="w-4 h-4 text-green-500" />
         });
-        // Slightly delayed scroll to allow layout to settle
         setTimeout(() => {
           scrollAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 150);
@@ -61,7 +60,7 @@ export function HomePage() {
   const handleClear = () => {
     setInputText('');
     setTweets([]);
-    toast.info('Editor cleared.');
+    toast.info('Thread Craft: Editor cleared.');
   };
   const handleDismissOnboarding = () => {
     setShowOnboarding(false);
@@ -71,7 +70,7 @@ export function HomePage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.name.toLowerCase().endsWith('.txt')) {
-      toast.error('Invalid format: Only .txt files are supported.');
+      toast.error('Thread Craft: Invalid format. Only .txt files are supported.');
       return;
     }
     const reader = new FileReader();
@@ -79,10 +78,10 @@ export function HomePage() {
       const content = event.target?.result;
       if (typeof content === 'string') {
         setInputText(content);
-        toast.success('Document imported successfully.');
+        toast.success('Thread Craft: Document imported successfully.');
       }
     };
-    reader.onerror = () => toast.error('Error: Failed to read file.');
+    reader.onerror = () => toast.error('Thread Craft: Error reading file.');
     reader.readAsText(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -94,7 +93,7 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Full thread structure copied to clipboard.');
+      toast.success('Thread Craft: Full thread structure copied to clipboard.');
     }
   };
   const handleStartFullThread = async () => {
@@ -102,7 +101,7 @@ export function HomePage() {
     const allText = formatThreadForClipboard(tweets);
     const success = await copyToClipboard(allText);
     if (success) {
-      toast.success('Thread Ready!', {
+      toast.success('Thread Craft: Thread Ready!', {
         description: 'The structure is in your clipboard. Opening the first post for you.',
       });
     }
@@ -118,7 +117,7 @@ export function HomePage() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-5xl md:text-7xl font-display font-black tracking-tighter text-slate-900">
-            Thread<span className="text-blue-600">Craft</span>
+            Thread <span className="text-blue-600">Craft</span>
           </h1>
           <p className="text-slate-500 max-w-xl mx-auto text-lg md:text-xl leading-relaxed font-medium mt-4">
             Transform long stories into perfectly sequenced X threads with zero friction.
@@ -243,7 +242,6 @@ export function HomePage() {
           </div>
         </motion.div>
         <div ref={scrollAnchorRef} className="h-4 -mt-20 invisible" />
-      </main>
       <AnimatePresence>
         {tweets.length > 0 && (
           <motion.section
@@ -317,7 +315,7 @@ export function HomePage() {
           </motion.div>
           <h3 className="text-3xl font-black text-slate-900 mb-4 relative z-10">Waiting for your story</h3>
           <p className="text-slate-500 max-w-sm mx-auto font-semibold px-6 text-lg relative z-10">
-            Paste your thoughts above to generate your professional thread preview.
+            Paste your thoughts above to generate your professional Thread Craft preview.
           </p>
         </motion.div>
       )}

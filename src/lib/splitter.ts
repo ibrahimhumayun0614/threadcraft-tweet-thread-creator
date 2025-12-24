@@ -1,5 +1,5 @@
 /**
- * Thread Craft Splitter Engine v1.4 (Final Audit - X Branding)
+ * Thread Craft Splitter Engine v1.4
  *
  * Professional tool for crafting long strings into perfectly formatted
  * X (Twitter) threads. Respects word/line boundaries, preserves formatting,
