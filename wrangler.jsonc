@@ -4,7 +4,7 @@
  */
  {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "threadcraft-a0guj9knity3mahd9t6_p",
+	"name": "threadcraft-tweet-thread-creator",
 	"main": "worker/index.ts",
 	"compatibility_date": "2025-04-24",
 	"assets": {
