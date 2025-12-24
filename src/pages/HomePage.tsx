@@ -242,83 +242,84 @@ export function HomePage() {
           </div>
         </motion.div>
         <div ref={scrollAnchorRef} className="h-4 -mt-20 invisible" />
-      <AnimatePresence>
-        {tweets.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="mt-32 space-y-20"
-          >
-            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-12 gap-8">
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-widest border border-green-100">
-                  <CheckCircle2 className="w-3 h-3" /> Processing Complete
-                </div>
-                <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900">Thread Preview</h2>
-                <p className="text-slate-500 text-lg font-medium">Your story is split into {tweets.length} high-impact posts.</p>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white border-slate-200 font-bold text-slate-700 hover:bg-slate-50 gap-2" onClick={handleCopyAll}>
-                  <Copy className="w-5 h-5" /> Copy Full Thread
-                </Button>
-                <Button variant="default" className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black shadow-2xl shadow-slate-900/20 gap-3 active:scale-95" onClick={handleStartFullThread}>
-                  <Rocket className="w-5 h-5" /> Start Posting
-                </Button>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              {tweets.map((tweet, index) => (
-                <TweetCard key={`${index}-${tweet.length}`} text={tweet} index={index} total={tweets.length} />
-              ))}
-            </div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="py-12 px-8 text-center bg-slate-100/50 rounded-[2.5rem] border border-slate-200/60 max-w-3xl mx-auto"
+        <AnimatePresence>
+          {tweets.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              className="mt-32 space-y-20"
             >
-              <div className="flex flex-col items-center gap-4">
-                <div className="bg-white p-3 rounded-2xl shadow-lg border border-slate-100">
-                  <Info className="w-6 h-6 text-blue-600" />
+              <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-12 gap-8">
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-widest border border-green-100">
+                    <CheckCircle2 className="w-3 h-3" /> Processing Complete
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900">Thread Preview</h2>
+                  <p className="text-slate-500 text-lg font-medium">Your story is split into {tweets.length} high-impact posts.</p>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="text-xl font-black text-slate-900">Pro Guidance</h4>
-                  <p className="text-slate-600 font-medium leading-relaxed max-w-xl mx-auto">
-                    To publish a thread on X, post your first segment, then reply to it with the second, and so on. We've copied the full structure to your clipboard for reference.
-                  </p>
+                <div className="flex flex-wrap gap-4">
+                  <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white border-slate-200 font-bold text-slate-700 hover:bg-slate-50 gap-2" onClick={handleCopyAll}>
+                    <Copy className="w-5 h-5" /> Copy Full Thread
+                  </Button>
+                  <Button variant="default" className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black shadow-2xl shadow-slate-900/20 gap-3 active:scale-95" onClick={handleStartFullThread}>
+                    <Rocket className="w-5 h-5" /> Start Posting
+                  </Button>
                 </div>
               </div>
-            </motion.div>
-            <div className="flex justify-center pt-10">
-              <Button variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group gap-3 text-slate-400 hover:text-slate-900 h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs">
-                <ChevronUp className="w-5 h-5 group-hover:-translate-y-2 transition-transform duration-300" /> Scroll to Top
-              </Button>
-            </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
-      {!tweets.length && !isSplitting && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mt-32 text-center py-40 border-2 border-dashed border-slate-200 rounded-[4rem] bg-white/50 backdrop-blur-sm relative overflow-hidden group"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.03)_0%,transparent_70%)]" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                {tweets.map((tweet, index) => (
+                  <TweetCard key={`${index}-${tweet.length}`} text={tweet} index={index} total={tweets.length} />
+                ))}
+              </div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="py-12 px-8 text-center bg-slate-100/50 rounded-[2.5rem] border border-slate-200/60 max-w-3xl mx-auto"
+              >
+                <div className="flex flex-col items-center gap-4">
+                  <div className="bg-white p-3 rounded-2xl shadow-lg border border-slate-100">
+                    <Info className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-xl font-black text-slate-900">Pro Guidance</h4>
+                    <p className="text-slate-600 font-medium leading-relaxed max-w-xl mx-auto">
+                      To publish a thread on X, post your first segment, then reply to it with the second, and so on. We've copied the full structure to your clipboard for reference.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+              <div className="flex justify-center pt-10">
+                <Button variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group gap-3 text-slate-400 hover:text-slate-900 h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs">
+                  <ChevronUp className="w-5 h-5 group-hover:-translate-y-2 transition-transform duration-300" /> Scroll to Top
+                </Button>
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+        {!tweets.length && !isSplitting && (
           <motion.div
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative inline-block mb-10"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-32 text-center py-40 border-2 border-dashed border-slate-200 rounded-[4rem] bg-white/50 backdrop-blur-sm relative overflow-hidden group"
           >
-             <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full" />
-             <Sparkles className="relative w-20 h-20 md:w-28 md:h-28 mx-auto text-blue-500/20 group-hover:text-blue-500/40 transition-colors duration-500" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.03)_0%,transparent_70%)]" />
+            <motion.div
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="relative inline-block mb-10"
+            >
+              <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full" />
+              <Sparkles className="relative w-20 h-20 md:w-28 md:h-28 mx-auto text-blue-500/20 group-hover:text-blue-500/40 transition-colors duration-500" />
+            </motion.div>
+            <h3 className="text-3xl font-black text-slate-900 mb-4 relative z-10">Waiting for your story</h3>
+            <p className="text-slate-500 max-w-sm mx-auto font-semibold px-6 text-lg relative z-10">
+              Paste your thoughts above to generate your professional Thread Craft preview.
+            </p>
           </motion.div>
-          <h3 className="text-3xl font-black text-slate-900 mb-4 relative z-10">Waiting for your story</h3>
-          <p className="text-slate-500 max-w-sm mx-auto font-semibold px-6 text-lg relative z-10">
-            Paste your thoughts above to generate your professional Thread Craft preview.
-          </p>
-        </motion.div>
-      )}
+        )}
+      </main>
       <footer className="py-20 text-center border-t border-slate-200/60 mt-40">
         <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.3em]">
           © {new Date().getFullYear()} THREAD CRAFT — PROFESSIONAL STORYTELLING SUITE
